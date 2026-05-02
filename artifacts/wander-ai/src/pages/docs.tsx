@@ -309,49 +309,54 @@ function SectionCli() {
       <P>
         The <InlineCode>wanderai</InlineCode> CLI is a standalone Node.js tool that
         gives you streaming agent responses directly in your terminal — no browser
-        required.
+        required. The CLI is not yet published to the npm registry; install it via a
+        local link from the cloned repository.
       </P>
 
-      <SubHeading>Step 1 — Clone the repository</SubHeading>
+      <SubHeading>Step 1 — Navigate to the CLI directory</SubHeading>
+      <Code language="bash">{`cd artifacts/wander-cli`}</Code>
+
+      <SubHeading>Step 2 — Install dependencies</SubHeading>
+      <Code language="bash">{`pnpm install`}</Code>
+
+      <SubHeading>Step 3 — Link globally</SubHeading>
       <P>
-        The CLI is not yet published to npm. Clone the repository first, then link it
-        locally so you get the full monorepo context.
+        Running <InlineCode>npm link</InlineCode> creates a global symlink so the{" "}
+        <InlineCode>wanderai</InlineCode> command is available anywhere on your machine —
+        no npm publish required.
       </P>
-      <Code language="bash">{`git clone https://github.com/wandertechuniverse/WanderAIAutoDevConfig.git
-cd WanderAIAutoDevConfig`}</Code>
+      <Code language="bash">{`npm link`}</Code>
 
-      <SubHeading>Step 2 — Install, build, and link globally</SubHeading>
-      <P>
-        Navigate to the CLI package, install its dependencies, compile the TypeScript
-        source, then use <InlineCode>npm link</InlineCode> to register the{" "}
-        <InlineCode>wanderai</InlineCode> command system-wide.
-      </P>
-      <Code language="bash">{`# Navigate to the CLI package
-cd artifacts/wander-cli
-
-# Install dependencies and compile
-npm install
-npm run build
-
-# Register as a global command
-npm link .`}</Code>
-
-      <SubHeading>Step 3 — Verify the installation</SubHeading>
+      <SubHeading>Verify the installation</SubHeading>
       <Code language="bash">{`wanderai --version`}</Code>
 
-      <Callout>
-        <strong>Live updates:</strong> Because this is a local link, any changes you make
-        to the source in <InlineCode>artifacts/wander-cli/</InlineCode> take effect
-        immediately after running <InlineCode>npm run build</InlineCode> — no re-linking
-        required.
-      </Callout>
-
-      <Callout>
-        The CLI reads your <InlineCode>OPENAI_API_KEY</InlineCode> from a{" "}
-        <InlineCode>.env</InlineCode> file in the directory where you run it, or from
-        your shell environment. It does <strong>not</strong> use the Replit AI
-        integration proxy.
-      </Callout>
+      {/* API Keys callout */}
+      <div className="mt-6 rounded-xl border border-amber-500/20 bg-amber-500/5 backdrop-blur-sm overflow-hidden">
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-amber-500/10 bg-amber-500/10">
+          <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest font-mono">Important — API Keys</span>
+        </div>
+        <div className="px-4 py-3 space-y-2.5 text-sm text-muted-foreground">
+          <div className="flex items-start gap-2.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+            <p>
+              <strong className="text-foreground">Web UI</strong> — uses the internal
+              Replit AI Integration proxy. No API key configuration needed when running
+              inside Replit.
+            </p>
+          </div>
+          <div className="flex items-start gap-2.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0" />
+            <p>
+              <strong className="text-foreground">CLI &amp; MCP Server</strong> — run
+              locally outside of Replit and require a direct{" "}
+              <InlineCode>OPENAI_API_KEY</InlineCode> (or your chosen provider's key).
+              Create a <InlineCode>.env</InlineCode> file inside{" "}
+              <InlineCode>artifacts/wander-cli/</InlineCode> with your key before
+              running any commands.
+            </p>
+          </div>
+        </div>
+      </div>
 
       <SubHeading>Usage</SubHeading>
       <Code language="bash">{`
@@ -427,6 +432,22 @@ WANDER_ROUTER_MODEL=gpt-4o-mini   # default
 WANDER_WORKER_MODEL=gpt-4o        # default
 WANDER_DATA_DIR=/custom/path/to/data
       `}</Code>
+
+      {/* Troubleshooting */}
+      <div className="mt-6 rounded-xl border border-slate-700/60 bg-slate-900/40 backdrop-blur-sm p-4 flex items-start gap-3">
+        <div className="shrink-0 w-5 h-5 rounded-full bg-slate-700 flex items-center justify-center mt-0.5">
+          <span className="text-[9px] font-bold text-slate-300">?</span>
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          <strong className="text-foreground">Troubleshooting:</strong> If the{" "}
+          <InlineCode>wanderai</InlineCode> command is not recognised after linking,
+          ensure your npm global bin directory is in your system's{" "}
+          <InlineCode>PATH</InlineCode>. Run{" "}
+          <InlineCode>npm bin -g</InlineCode> to find the directory, then add it to
+          your shell profile (<InlineCode>~/.bashrc</InlineCode>,{" "}
+          <InlineCode>~/.zshrc</InlineCode>, etc.).
+        </p>
+      </div>
     </div>
   );
 }
