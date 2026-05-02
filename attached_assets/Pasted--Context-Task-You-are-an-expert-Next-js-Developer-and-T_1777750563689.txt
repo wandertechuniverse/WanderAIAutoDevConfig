@@ -1,0 +1,40 @@
+# Context & Task
+You are an expert Next.js Developer and Technical Writer. I need to update the Documentation Hub (`app/docs/page.tsx` or the relevant docs layout) for the Wander AI Auto Dev Config portal.
+
+Please add a new dedicated section titled: **"Making the AI Self-Aware (Repo Context)"**
+
+# Content to Include
+Write clear, formatted documentation explaining how developers can give the AI context about the repository so it never hallucinates folder structures. Include two methods:
+
+**Method 1: The .cursorrules File (For Cursor/Windsurf Users)**
+Explain that users should create a `.cursorrules` file in the root of the project. Provide this exact code block for them to copy:
+\`\`\`markdown
+# Wander AI Auto Dev Config Repository Rules
+
+You are assisting a developer in maintaining the `WanderAIAutoDevConfig` repository. 
+
+1. **Context:** This repo contains a Next.js Web UI, a Node.js CLI, and an MCP Server.
+2. **Adding Agents:** If asked to add a new agent, you MUST do two things:
+   - Create a new `{agent_name}.agent.md` file in `/data/agents/`.
+   - Update the `/data/agents_config.json` array.
+3. **Docs Updates:** Any new features added to the MCP server (`/src`) or the Web UI (`/app`) must be documented in the `/app/docs` pages.
+\`\`\`
+
+**Method 2: Root System Instructions (For Web UI/CLI)**
+Explain that this exact Workspace Context should be added to the Orchestrator's root prompt or `.github/copilot-instructions.md`. Provide this exact code block:
+\`\`\`markdown
+## Workspace Context
+You are currently operating inside the official repository:
+**Repo URL:** `https://github.com/wandertechuniverse/WanderAIAutoDevConfig.git`
+
+Architecture Map:
+- `/app` -> Next.js web portal UI and API routes.
+- `/data/agents_config.json` -> Master AI registry.
+- `/data/agents/*.agent.md` -> Persona markdown files.
+- `/src` -> MCP server and CLI tool logic.
+- `/docs` -> Markdown documentation for the portal.
+\`\`\`
+
+# UI/Styling Requirements
+- Ensure this new section matches the existing premium dark mode, glassmorphic aesthetic of the docs.
+- **CRITICAL:** Ensure the `<pre>` and `<code>` blocks containing the markdown examples have `overflow-x-auto`, `w-full`, and `p-4` applied so they scroll smoothly horizontally on mobile devices without breaking the page width.

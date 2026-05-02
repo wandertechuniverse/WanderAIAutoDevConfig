@@ -13,6 +13,7 @@ import {
   Plug,
   Rocket,
   Bot,
+  Brain,
   ChevronRight,
   MessageSquare,
   Copy,
@@ -23,11 +24,12 @@ import {
 // ─── Nav sections ────────────────────────────────────────────────────────────
 
 const SECTIONS = [
-  { id: "overview",    label: "Overview",        icon: BookOpen },
-  { id: "agents",      label: "The 16 Agents",   icon: Bot },
-  { id: "cli",         label: "CLI Tool",         icon: Terminal },
-  { id: "mcp",         label: "MCP Integration",  icon: Plug },
-  { id: "deployment",  label: "Deployment",       icon: Rocket },
+  { id: "overview",     label: "Overview",         icon: BookOpen },
+  { id: "agents",       label: "The 16 Agents",    icon: Bot },
+  { id: "cli",          label: "CLI Tool",          icon: Terminal },
+  { id: "mcp",          label: "MCP Integration",   icon: Plug },
+  { id: "repo-context", label: "Repo Context",      icon: Brain },
+  { id: "deployment",   label: "Deployment",        icon: Rocket },
 ] as const;
 
 type SectionId = (typeof SECTIONS)[number]["id"];
@@ -630,6 +632,90 @@ pnpm run build
   );
 }
 
+function SectionRepoContext() {
+  return (
+    <div>
+      <SectionHeading id="repo-context">
+        <Brain size={20} className="text-cyan-400" /> Making the AI Self-Aware (Repo Context)
+      </SectionHeading>
+
+      <P>
+        Without explicit context, AI tools hallucinate folder structures and invent files
+        that don't exist. These two methods give WanderAI agents a precise map of the
+        repository so every response is grounded in what actually exists on disk.
+      </P>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-6">
+        {[
+          { label: "Method 1", title: ".cursorrules file", desc: "Auto-loaded by Cursor and Windsurf for every conversation in the workspace." },
+          { label: "Method 2", title: "Root System Instructions", desc: "Injected into the Orchestrator prompt and .github/copilot-instructions.md." },
+        ].map(({ label, title, desc }) => (
+          <div key={label} className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 backdrop-blur-sm">
+            <div className="text-[10px] font-bold text-cyan-400/60 uppercase tracking-widest font-mono mb-1">{label}</div>
+            <div className="text-sm font-semibold text-foreground mb-1">{title}</div>
+            <div className="text-xs text-muted-foreground leading-relaxed">{desc}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Method 1 */}
+      <SubHeading>Method 1 — The .cursorrules file <span className="text-muted-foreground/50 font-normal text-sm">(Cursor / Windsurf)</span></SubHeading>
+
+      <P>
+        Create a <InlineCode>.cursorrules</InlineCode> file in the project root. Cursor and
+        Windsurf read this file automatically and inject it as context for every AI
+        conversation in that workspace — no configuration or plugin required.
+      </P>
+
+      <Code language="markdown">{`# Wander AI Auto Dev Config Repository Rules
+
+You are assisting a developer in maintaining the \`WanderAIAutoDevConfig\` repository.
+
+1. **Context:** This repo contains a Next.js Web UI, a Node.js CLI, and an MCP Server.
+2. **Adding Agents:** If asked to add a new agent, you MUST do two things:
+   - Create a new \`{agent_name}.agent.md\` file in \`/data/agents/\`.
+   - Update the \`/data/agents_config.json\` array.
+3. **Docs Updates:** Any new features added to the MCP server (\`/src\`) or the Web UI (\`/app\`) must be documented in the \`/app/docs\` pages.`}</Code>
+
+      <Callout>
+        Windsurf reads <InlineCode>.cursorrules</InlineCode> in addition to its own
+        <InlineCode>.windsurfrules</InlineCode> — you can use the same file for both IDEs.
+      </Callout>
+
+      {/* Method 2 */}
+      <SubHeading>Method 2 — Root System Instructions <span className="text-muted-foreground/50 font-normal text-sm">(Web UI / CLI)</span></SubHeading>
+
+      <P>
+        Add the Workspace Context block to{" "}
+        <InlineCode>.github/copilot-instructions.md</InlineCode> or directly into the
+        Orchestrator's root prompt. The MCP server loads this file as its fallback persona,
+        making it the authoritative architecture map for every agent.
+      </P>
+
+      <Code language="markdown">{`## Workspace Context
+You are currently operating inside the official repository:
+**Repo URL:** \`https://github.com/wandertechuniverse/WanderAIAutoDevConfig.git\`
+
+Architecture Map:
+- \`/app\`                        -> Next.js web portal UI and API routes.
+- \`/data/agents_config.json\`    -> Master AI registry.
+- \`/data/agents/*.agent.md\`     -> Persona markdown files.
+- \`/src\`                        -> MCP server and CLI tool logic.
+- \`/docs\`                       -> Markdown documentation for the portal.`}</Code>
+
+      <SubHeading>Why this works</SubHeading>
+      <P>
+        Both methods achieve the same goal through different delivery mechanisms. The
+        <InlineCode>.cursorrules</InlineCode> file is IDE-side — it runs before the agent
+        even receives your message. The root system instructions approach is agent-side —
+        the persona file is loaded at request time, injecting the architecture map as part
+        of the system prompt. Using both gives you full coverage across all three surfaces:
+        the Web UI, the CLI, and direct IDE chat.
+      </P>
+    </div>
+  );
+}
+
 function SectionDeployment() {
   return (
     <div>
@@ -923,8 +1009,9 @@ export function DocsPage() {
             {activeSection === "overview"   && <SectionOverview />}
             {activeSection === "agents"     && <SectionAgents />}
             {activeSection === "cli"        && <SectionCli />}
-            {activeSection === "mcp"        && <SectionMcp />}
-            {activeSection === "deployment" && <SectionDeployment />}
+            {activeSection === "mcp"          && <SectionMcp />}
+            {activeSection === "repo-context" && <SectionRepoContext />}
+            {activeSection === "deployment"   && <SectionDeployment />}
 
             {/* Pagination */}
             <div className="flex items-center justify-between mt-16 pt-6 border-t border-slate-800">
