@@ -201,7 +201,7 @@ User task description
 │   │       ├── agents_config.json     # Agent registry
 │   │       └── agents/*.agent.md      # Agent personas
 │   ├── wander-ai/           # React + Vite web UI (this app)
-│   ├── wander-cli/          # Node.js terminal CLI
+│   ├── wander-cli/          # ← run "npm link ." here · Node.js CLI
 │   └── wander-mcp/          # MCP server for IDE integration
 └── .github/
     └── copilot-instructions.md  # Fallback orchestrator persona
@@ -312,15 +312,39 @@ function SectionCli() {
         required.
       </P>
 
-      <SubHeading>Global install</SubHeading>
-      <Code language="bash">{`
-# From the repo root — links the binary globally
-cd artifacts/wander-cli
-npm install -g .
+      <SubHeading>Step 1 — Clone the repository</SubHeading>
+      <P>
+        The CLI is not yet published to npm. Clone the repository first, then link it
+        locally so you get the full monorepo context.
+      </P>
+      <Code language="bash">{`git clone https://github.com/wandertechuniverse/WanderAIAutoDevConfig.git
+cd WanderAIAutoDevConfig`}</Code>
 
-# Verify
-wanderai --version
-      `}</Code>
+      <SubHeading>Step 2 — Install, build, and link globally</SubHeading>
+      <P>
+        Navigate to the CLI package, install its dependencies, compile the TypeScript
+        source, then use <InlineCode>npm link</InlineCode> to register the{" "}
+        <InlineCode>wanderai</InlineCode> command system-wide.
+      </P>
+      <Code language="bash">{`# Navigate to the CLI package
+cd artifacts/wander-cli
+
+# Install dependencies and compile
+npm install
+npm run build
+
+# Register as a global command
+npm link .`}</Code>
+
+      <SubHeading>Step 3 — Verify the installation</SubHeading>
+      <Code language="bash">{`wanderai --version`}</Code>
+
+      <Callout>
+        <strong>Live updates:</strong> Because this is a local link, any changes you make
+        to the source in <InlineCode>artifacts/wander-cli/</InlineCode> take effect
+        immediately after running <InlineCode>npm run build</InlineCode> — no re-linking
+        required.
+      </Callout>
 
       <Callout>
         The CLI reads your <InlineCode>OPENAI_API_KEY</InlineCode> from a{" "}
