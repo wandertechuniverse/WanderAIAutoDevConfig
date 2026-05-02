@@ -1,0 +1,39 @@
+# Context & Role
+You are an expert Full-Stack Next.js Developer. I want you to build a web-based internal tool called **Wander AI Auto Dev Config**. 
+
+I already have a system of 15 specialized AI agents defined via a JSON configuration and individual Markdown persona files. I want a web app where users can select an agent from a sidebar and chat with them. The app must read the agent's markdown file and inject it as the hidden "System Prompt" before sending the request to the LLM API.
+
+# Tech Stack
+- Frontend & Backend: Next.js (App Router, preferably v16.x)
+- Styling: Tailwind CSS
+- UI Components: Simple HTML/CSS or a minimalist library (no heavy frameworks, keep it clean and fast)
+- LLM Integration: OpenAI SDK (or Anthropic SDK) via Next.js API Routes.
+
+# Directory & Data Structure
+The app must be built to accommodate the following local data files (which I will provide later, but you must write the code to parse them):
+1. `data/agents_config.json`: Contains an array of agents (id, name, role, agent_type).
+2. `data/agents/`: A folder containing markdown files named `{agent_id}.agent.md` (e.g., `frontend_dev.agent.md`).
+
+# Core Features to Build
+
+**1. The API Route (`app/api/chat/route.ts`)**
+- Create an API route that accepts a POST request containing: `messages` (array) and `agentId` (string).
+- The route must dynamically read the corresponding markdown file from `/data/agents/{agentId}.agent.md` using Node's `fs` module.
+- It must take the contents of that markdown file and set it as the "System Prompt" (or first system message) for the LLM.
+- It must call the LLM API using an API key from `.env` and return the streaming or standard response.
+- *Fallback:* If no `agentId` is provided or if it is "orchestrator", load `.github/copilot-instructions.md` as the system prompt to default to the Engineering Manager persona.
+
+**2. The Frontend UI (`app/page.tsx`)**
+- **Header:** Display the branding "Wander AI Auto Dev Config".
+- **Sidebar (Left):** Read the `agents_config.json` and display a list of all available agents. Group them by "User-Invocable" (Leaders) and "Subagents" (Workers). Highlight the currently selected agent.
+- **Chat Window (Right):** A standard chat interface showing the conversation history and an input box at the bottom.
+- **State Management:** When a user clicks a different agent in the sidebar, clear the current chat history and update the active `agentId` state.
+
+# Instructions for Execution
+1. Provide the complete `package.json` dependencies I need to install.
+2. Provide the code for the Next.js API route (`app/api/chat/route.ts`).
+3. Provide the code for a utility file to read the local JSON/MD files safely.
+4. Provide the complete frontend React code for the Layout, Sidebar, and Chat interface.
+5. Provide instructions on what I need to put in my `.env` file.
+
+Write clean, modular, and well-commented code. Prioritize simplicity and a sleek, modern dark-mode UI worthy of the Wander AI brand.

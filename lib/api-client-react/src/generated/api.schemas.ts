@@ -8,3 +8,36 @@
 export interface HealthStatus {
   status: string;
 }
+
+export type AgentAgentType =
+  (typeof AgentAgentType)[keyof typeof AgentAgentType];
+
+export const AgentAgentType = {
+  leader: "leader",
+  worker: "worker",
+} as const;
+
+export interface Agent {
+  id: string;
+  name: string;
+  role: string;
+  agent_type: AgentAgentType;
+}
+
+export type ChatMessageRole =
+  (typeof ChatMessageRole)[keyof typeof ChatMessageRole];
+
+export const ChatMessageRole = {
+  user: "user",
+  assistant: "assistant",
+} as const;
+
+export interface ChatMessage {
+  role: ChatMessageRole;
+  content: string;
+}
+
+export interface ChatRequest {
+  agentId: string;
+  messages: ChatMessage[];
+}

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "engineering_manager",
+    "name": "Engineering Manager",
+    "role": "Orchestrates the entire development team and coordinates all specialized agents",
+    "agent_type": "leader"
+  },
+  {
+    "id": "product_manager",
+    "name": "Product Manager",
+    "role": "Defines product requirements, user stories, and feature prioritization",
+    "agent_type": "leader"
+  },
+  {
+    "id": "tech_lead",
+    "name": "Tech Lead",
+    "role": "Makes architectural decisions and reviews technical approaches",
+    "agent_type": "leader"
+  },
+  {
+    "id": "frontend_dev",
+    "name": "Frontend Developer",
+    "role": "Builds UI components, pages, and client-side logic using React and TypeScript",
+    "agent_type": "worker"
+  },
+  {
+    "id": "backend_dev",
+    "name": "Backend Developer",
+    "role": "Implements API routes, business logic, and server-side systems",
+    "agent_type": "worker"
+  },
+  {
+    "id": "database_engineer",
+    "name": "Database Engineer",
+    "role": "Designs schemas, writes migrations, and optimizes database queries",
+    "agent_type": "worker"
+  },
+  {
+    "id": "devops_engineer",
+    "name": "DevOps Engineer",
+    "role": "Manages CI/CD pipelines, infrastructure, and deployment workflows",
+    "agent_type": "worker"
+  },
+  {
+    "id": "qa_engineer",
+    "name": "QA Engineer",
+    "role": "Writes and runs tests, finds bugs, and ensures software quality",
+    "agent_type": "worker"
+  },
+  {
+    "id": "security_engineer",
+    "name": "Security Engineer",
+    "role": "Audits code for vulnerabilities, enforces security best practices",
+    "agent_type": "worker"
+  },
+  {
+    "id": "ui_ux_designer",
+    "name": "UI/UX Designer",
+    "role": "Designs interfaces, user flows, and ensures great user experience",
+    "agent_type": "worker"
+  },
+  {
+    "id": "data_scientist",
+    "name": "Data Scientist",
+    "role": "Analyzes data, builds ML models, and surfaces insights",
+    "agent_type": "worker"
+  },
+  {
+    "id": "technical_writer",
+    "name": "Technical Writer",
+    "role": "Writes documentation, READMEs, and developer guides",
+    "agent_type": "worker"
+  },
+  {
+    "id": "code_reviewer",
+    "name": "Code Reviewer",
+    "role": "Reviews pull requests for quality, correctness, and consistency",
+    "agent_type": "worker"
+  },
+  {
+    "id": "api_designer",
+    "name": "API Designer",
+    "role": "Designs REST and GraphQL APIs following best practices and OpenAPI spec",
+    "agent_type": "worker"
+  },
+  {
+    "id": "performance_engineer",
+    "name": "Performance Engineer",
+    "role": "Profiles applications, identifies bottlenecks, and improves performance",
+    "agent_type": "worker"
+  }
+]

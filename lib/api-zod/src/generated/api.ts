@@ -14,3 +14,29 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Returns the full list of agents from agents_config.json
+ * @summary List all agents
+ */
+export const ListAgentsResponseItem = zod.object({
+  id: zod.string(),
+  name: zod.string(),
+  role: zod.string(),
+  agent_type: zod.enum(["leader", "worker"]),
+});
+export const ListAgentsResponse = zod.array(ListAgentsResponseItem);
+
+/**
+ * Streams an LLM response using the agent's markdown persona as the system prompt
+ * @summary Send a chat message to an agent
+ */
+export const SendChatMessageBody = zod.object({
+  agentId: zod.string(),
+  messages: zod.array(
+    zod.object({
+      role: zod.enum(["user", "assistant"]),
+      content: zod.string(),
+    }),
+  ),
+});
