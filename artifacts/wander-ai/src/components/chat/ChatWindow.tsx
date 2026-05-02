@@ -38,20 +38,25 @@ export function ChatWindow({ agent, messages, onUpdateMessages }: ChatWindowProp
         <div className="w-16 h-16 rounded-2xl bg-muted/50 border border-slate-800 flex items-center justify-center mb-6 shadow-xl">
           <Code2 size={26} className="text-cyan-500/60" />
         </div>
-        <h2 className="text-xl font-bold text-foreground mb-2 tracking-tight">Select an IDE Agent</h2>
-        <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
-          Each agent is a specialized AI persona for your IDE workflow. Leaders plan and coordinate. Workers implement, review, and ship.
+        <h2 className="text-lg font-bold text-foreground mb-2 tracking-tight">Choose an agent to start</h2>
+        <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
+          Pick a specialist from the sidebar. Leaders plan and coordinate — Workers implement, review, and ship.
         </p>
-        <div className="mt-8 grid grid-cols-3 gap-3 text-left max-w-sm w-full">
-          {["VSCode", "Cursor", "Windsurf"].map(ide => (
-            <div key={ide} className="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-center">
-              <span className="text-xs text-muted-foreground/60 font-mono">{ide}</span>
-            </div>
-          ))}
+        <div className="mt-8 flex flex-col items-center gap-2">
+          <p className="text-[9px] font-semibold text-muted-foreground/30 uppercase tracking-widest">
+            Works natively with
+          </p>
+          <div className="flex flex-wrap justify-center gap-1.5">
+            {["VSCode", "Cursor", "Windsurf", "Antigravity"].map(ide => (
+              <span
+                key={ide}
+                className="px-2.5 py-1 rounded-full text-[11px] font-medium border border-slate-800 bg-slate-900/60 text-muted-foreground/40"
+              >
+                {ide}
+              </span>
+            ))}
+          </div>
         </div>
-        <p className="mt-4 text-[11px] text-muted-foreground/30 font-mono">
-          Compatible with any IDE that supports AI agents
-        </p>
       </div>
     );
   }

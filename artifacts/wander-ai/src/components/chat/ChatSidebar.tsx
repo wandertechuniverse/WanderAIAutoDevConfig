@@ -2,6 +2,7 @@ import { Agent } from "@workspace/api-client-react/src/generated/api.schemas";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BrainCircuit, BookOpen, Cpu, Sparkles, X } from "lucide-react";
 import { Link } from "wouter";
+import { IDE_OPTIONS } from "@/hooks/use-ide-selection";
 
 interface ChatSidebarProps {
   agents: Agent[];
@@ -109,6 +110,26 @@ export function ChatSidebar({
           </div>
         )}
       </ScrollArea>
+
+      {/* IDE Compatibility section */}
+      <div className="px-3 pb-2 shrink-0">
+        <div className="rounded-xl bg-slate-900/50 border border-slate-800/60 p-3">
+          <p className="text-[9px] font-semibold text-muted-foreground/35 uppercase tracking-widest mb-2.5">
+            Works natively with your favorite AI IDEs
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {IDE_OPTIONS.map(({ id, label }) => (
+              <Link
+                key={id}
+                href="/docs#ide-integration"
+                className="px-2.5 py-1 rounded-full text-[11px] font-medium border border-slate-700/60 bg-slate-800/60 text-muted-foreground/60 hover:text-cyan-300 hover:border-cyan-500/30 hover:bg-cyan-500/5 transition-all"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Footer */}
       <div className="p-3 border-t border-slate-800 shrink-0 space-y-2">

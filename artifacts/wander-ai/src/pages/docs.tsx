@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useIdeSelection, IDE_OPTIONS, type IdeId } from "@/hooks/use-ide-selection";
+import { IDE_OPTIONS, type IdeId } from "@/hooks/use-ide-selection";
 import {
   Sparkles,
   Menu,
@@ -485,15 +485,14 @@ function buildConfigSnippet(ide: IdeId): string {
 }
 
 function SectionMcp() {
-  const { selectedIde, selectIde } = useIdeSelection();
-  // Default to cursor if nothing selected yet (user arrived at docs directly)
-  const activeIde: IdeId = selectedIde ?? "cursor";
+  const [activeIde, setActiveIde] = useState<IdeId>("cursor");
   const meta = IDE_MCP_CONFIG[activeIde];
   const configSnippet = buildConfigSnippet(activeIde);
   const ideLabel = IDE_OPTIONS.find(o => o.id === activeIde)?.label ?? activeIde;
 
   return (
     <div>
+      <div id="ide-integration" />
       <SectionHeading id="mcp">
         <Plug size={20} className="text-cyan-400" /> MCP Integration
       </SectionHeading>
@@ -513,7 +512,7 @@ function SectionMcp() {
           {IDE_OPTIONS.map(({ id, label }) => (
             <button
               key={id}
-              onClick={() => selectIde(id)}
+              onClick={() => setActiveIde(id)}
               className={[
                 "px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all",
                 activeIde === id
@@ -525,11 +524,6 @@ function SectionMcp() {
             </button>
           ))}
         </div>
-        {!selectedIde && (
-          <p className="text-[11px] text-amber-400/60 font-mono mt-2">
-            Tip: select your IDE on the home screen to persist this choice.
-          </p>
-        )}
       </div>
 
       {/* Step 1: Build */}
@@ -831,8 +825,21 @@ function DocsSidebarNav({
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export function DocsPage() {
-  const [activeSection, setActiveSection] = useState<SectionId>("overview");
+  const [activeSection, setActiveSection] = useState<SectionId>(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash === "#ide-integration" || hash === "#mcp") return "mcp";
+    }
+    return "overview";
+  });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash === "#ide-integration" || hash === "#mcp") {
+      setActiveSection("mcp");
+    }
+  }, []);
 
   const handleSelect = (id: SectionId) => {
     setActiveSection(id);
