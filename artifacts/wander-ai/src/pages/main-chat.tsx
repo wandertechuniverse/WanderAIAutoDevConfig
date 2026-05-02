@@ -3,6 +3,8 @@ import { useListAgents } from "@workspace/api-client-react";
 import type { Agent, ChatMessage } from "@workspace/api-client-react/src/generated/api.schemas";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 import { ChatWindow } from "@/components/chat/ChatWindow";
+import { IdeSelector } from "@/components/onboarding/IdeSelector";
+import { useIdeSelection } from "@/hooks/use-ide-selection";
 import { Link } from "wouter";
 import { BookOpen, Menu, Sparkles } from "lucide-react";
 
@@ -11,6 +13,7 @@ export function MainChat() {
   const [activeAgentId, setActiveAgentId] = useState<string | null>(null);
   const [conversations, setConversations] = useState<Record<string, ChatMessage[]>>({});
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { selectedIde, selectIde } = useIdeSelection();
 
   const activeAgent = agents?.find((a: Agent) => a.id === activeAgentId) || null;
   const activeMessages = activeAgentId ? (conversations[activeAgentId] || []) : [];
@@ -24,6 +27,32 @@ export function MainChat() {
     setConversations(prev => ({ ...prev, [agentId]: messages }));
   };
 
+  // ── IDE onboarding gate ───────────────────────────────────────────────────
+  if (!selectedIde) {
+    return (
+      <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-[#060D1A] text-foreground">
+        {/* Minimal header while onboarding */}
+        <header className="flex items-center justify-between px-5 h-13 shrink-0 bg-[#060D1A]/80 backdrop-blur-md border-b border-slate-800/60 sticky top-0 z-20">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+              <Sparkles size={13} />
+            </div>
+            <span className="font-semibold text-sm text-white/90 tracking-wide">WanderAI</span>
+          </div>
+          <Link
+            href="/docs"
+            className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors font-mono"
+          >
+            <BookOpen size={13} />
+            docs
+          </Link>
+        </header>
+        <IdeSelector onSelect={selectIde} />
+      </div>
+    );
+  }
+
+  // ── Normal chat layout ────────────────────────────────────────────────────
   return (
     <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-background text-foreground">
       {/* Mobile top navbar */}

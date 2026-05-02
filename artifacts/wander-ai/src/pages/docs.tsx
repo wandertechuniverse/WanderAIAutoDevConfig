@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useIdeSelection, IDE_OPTIONS, type IdeId } from "@/hooks/use-ide-selection";
 import {
   Sparkles,
   Menu,
@@ -16,6 +17,7 @@ import {
   MessageSquare,
   Copy,
   Check,
+  Monitor,
 } from "lucide-react";
 
 // ─── Nav sections ────────────────────────────────────────────────────────────
@@ -400,7 +402,93 @@ WANDER_DATA_DIR=/custom/path/to/data
   );
 }
 
+// ─── IDE-specific MCP config data ────────────────────────────────────────────
+
+const IDE_MCP_CONFIG: Record<
+  IdeId,
+  {
+    configPath: string;
+    configFormat: "mcpServers" | "servers";
+    restartNote: string;
+    invokeNote: string;
+    extraNote?: string;
+  }
+> = {
+  cursor: {
+    configPath: "~/.cursor/mcp.json",
+    configFormat: "mcpServers",
+    restartNote: "Restart Cursor after saving.",
+    invokeNote: "Type @wanderai in any Cursor chat or Cmd+K prompt.",
+  },
+  vscode: {
+    configPath: ".vscode/mcp.json",
+    configFormat: "servers",
+    restartNote: "Reload the VS Code window (Cmd+Shift+P → Developer: Reload Window).",
+    invokeNote: "Open GitHub Copilot Chat and type @wanderai, or press Cmd+I.",
+    extraNote:
+      "Requires VS Code ≥ 1.99 and GitHub Copilot with agent mode enabled. The config file lives inside your project — commit it to share with your team.",
+  },
+  windsurf: {
+    configPath: "~/.codeium/windsurf/mcp_config.json",
+    configFormat: "mcpServers",
+    restartNote: "Restart Windsurf (or reload the MCP panel from Settings → MCP).",
+    invokeNote: "Type @wanderai in the Cascade chat panel.",
+  },
+  antigravity: {
+    configPath: "~/.antigravity/config/mcp.json",
+    configFormat: "mcpServers",
+    restartNote: "Restart Antigravity or run Reload MCP from the command palette.",
+    invokeNote: "Type @wanderai in the Agent panel.",
+  },
+};
+
+function buildConfigSnippet(ide: IdeId): string {
+  const meta = IDE_MCP_CONFIG[ide];
+  if (meta.configFormat === "servers") {
+    return JSON.stringify(
+      {
+        servers: {
+          wanderai: {
+            type: "stdio",
+            command: "node",
+            args: ["/absolute/path/to/artifacts/wander-mcp/dist/index.js"],
+            env: {
+              OPENAI_API_KEY: "sk-...",
+              WANDER_DATA_DIR: "/absolute/path/to/artifacts/api-server/data",
+            },
+          },
+        },
+      },
+      null,
+      2,
+    );
+  }
+  return JSON.stringify(
+    {
+      mcpServers: {
+        wanderai: {
+          command: "node",
+          args: ["/absolute/path/to/artifacts/wander-mcp/dist/index.js"],
+          env: {
+            OPENAI_API_KEY: "sk-...",
+            WANDER_DATA_DIR: "/absolute/path/to/artifacts/api-server/data",
+          },
+        },
+      },
+    },
+    null,
+    2,
+  );
+}
+
 function SectionMcp() {
+  const { selectedIde, selectIde } = useIdeSelection();
+  // Default to cursor if nothing selected yet (user arrived at docs directly)
+  const activeIde: IdeId = selectedIde ?? "cursor";
+  const meta = IDE_MCP_CONFIG[activeIde];
+  const configSnippet = buildConfigSnippet(activeIde);
+  const ideLabel = IDE_OPTIONS.find(o => o.id === activeIde)?.label ?? activeIde;
+
   return (
     <div>
       <SectionHeading id="mcp">
@@ -408,69 +496,75 @@ function SectionMcp() {
       </SectionHeading>
 
       <P>
-        The WanderAI MCP server exposes three tools that any MCP-compatible IDE host can
-        call. The server communicates over <strong>stdio</strong> — the IDE spawns it as a
-        child process.
+        The WanderAI MCP server exposes three tools that any MCP-compatible IDE can call.
+        The server communicates over <strong>stdio</strong> — the IDE spawns it as a child
+        process. Select your IDE below to see the exact setup instructions.
       </P>
 
-      <SubHeading>Build the server</SubHeading>
-      <Code language="bash">{`
-cd artifacts/wander-mcp
+      {/* IDE switcher */}
+      <div className="my-6">
+        <p className="text-[10px] text-muted-foreground/50 uppercase tracking-widest font-mono mb-3 flex items-center gap-1.5">
+          <Monitor size={11} /> Your IDE
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {IDE_OPTIONS.map(({ id, label }) => (
+            <button
+              key={id}
+              onClick={() => selectIde(id)}
+              className={[
+                "px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all",
+                activeIde === id
+                  ? "bg-cyan-500/15 border-cyan-500/30 text-cyan-300"
+                  : "bg-slate-900/50 border-slate-700/50 text-muted-foreground hover:text-foreground hover:border-slate-600",
+              ].join(" ")}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {!selectedIde && (
+          <p className="text-[11px] text-amber-400/60 font-mono mt-2">
+            Tip: select your IDE on the home screen to persist this choice.
+          </p>
+        )}
+      </div>
+
+      {/* Step 1: Build */}
+      <SubHeading>Step 1 — Build the server</SubHeading>
+      <Code language="bash">{`cd artifacts/wander-mcp
 pnpm install
 pnpm run build
-# Output: dist/index.js
-      `}</Code>
+# Output: dist/index.js`}</Code>
 
-      <SubHeading>Cursor</SubHeading>
+      {/* Step 2: IDE-specific config */}
+      <SubHeading>Step 2 — Add to {ideLabel}</SubHeading>
+
+      {meta.extraNote && <Callout>{meta.extraNote}</Callout>}
+
       <P>
-        Open <InlineCode>~/.cursor/mcp.json</InlineCode> (create it if it doesn't exist)
-        and add the following entry:
-      </P>
-      <Code language="json">{`
-{
-  "mcpServers": {
-    "wanderai": {
-      "command": "node",
-      "args": ["/absolute/path/to/artifacts/wander-mcp/dist/index.js"],
-      "env": {
-        "OPENAI_API_KEY": "sk-...",
-        "WANDER_DATA_DIR": "/absolute/path/to/artifacts/api-server/data"
-      }
-    }
-  }
-}
-      `}</Code>
-      <P>
-        Restart Cursor. The WanderAI tools will appear in the MCP panel. You can invoke
-        them by mentioning{" "}
-        <InlineCode>@wanderai</InlineCode> in any Cursor chat or Cmd+K prompt.
+        Open <InlineCode>{meta.configPath}</InlineCode> (create it if it does not exist)
+        and add the entry below. Replace the paths with absolute paths on your machine.
       </P>
 
-      <SubHeading>Claude Desktop</SubHeading>
-      <P>
-        Edit <InlineCode>~/Library/Application Support/Claude/claude_desktop_config.json</InlineCode>{" "}
-        (macOS) or <InlineCode>%APPDATA%\Claude\claude_desktop_config.json</InlineCode>{" "}
-        (Windows):
-      </P>
-      <Code language="json">{`
-{
-  "mcpServers": {
-    "wanderai": {
-      "command": "node",
-      "args": ["/absolute/path/to/artifacts/wander-mcp/dist/index.js"],
-      "env": {
-        "OPENAI_API_KEY": "sk-...",
-        "WANDER_DATA_DIR": "/absolute/path/to/artifacts/api-server/data"
-      }
-    }
-  }
-}
-      `}</Code>
-      <P>
-        Restart Claude Desktop. The server appears as{" "}
-        <InlineCode>wanderai-orchestrator</InlineCode> in the tool list.
-      </P>
+      <Code language="json">{configSnippet}</Code>
 
+      <P>{meta.restartNote}</P>
+
+      {/* Step 3: Invoke */}
+      <SubHeading>Step 3 — Invoke WanderAI</SubHeading>
+      <P>{meta.invokeNote}</P>
+      <Code language="text">{`# ${ideLabel} example
+
+"Use wanderai to review the security of my auth middleware"
+→ Routes to: security_engineer
+
+"Use wanderai to write a Flutter screen for a checkout form"
+→ Routes to: mobile_dev
+
+"Ask wanderai tech_lead to design the database schema for a SaaS billing system"
+→ Bypasses router, uses tech_lead directly`}</Code>
+
+      {/* Tools reference */}
       <SubHeading>Available tools</SubHeading>
 
       <div className="space-y-4 mt-4">
@@ -479,9 +573,9 @@ pnpm run build
             name: "delegate_to_wander_ai",
             badge: "auto-routes",
             badgeColor: "cyan",
-            desc: "The primary tool. Automatically routes your task to the best agent.",
+            desc: "The primary tool. Automatically routes your task to the best-suited agent.",
             params: [
-              { name: "task_description", req: true,  desc: "The task, question, or instruction." },
+              { name: "task_description",    req: true,  desc: "The task, question, or instruction." },
               { name: "current_code_context", req: false, desc: "Optional — paste the current file or snippet." },
             ],
           },
@@ -498,8 +592,8 @@ pnpm run build
             badgeColor: "amber",
             desc: "Bypass the router and send your task directly to a named agent.",
             params: [
-              { name: "agent_id",          req: true,  desc: "e.g. 'frontend_dev', 'qa_engineer'" },
-              { name: "task_description",  req: true,  desc: "The task or question." },
+              { name: "agent_id",             req: true,  desc: "e.g. 'frontend_dev', 'qa_engineer'" },
+              { name: "task_description",     req: true,  desc: "The task or question." },
               { name: "current_code_context", req: false, desc: "Optional code context." },
             ],
           },
@@ -535,20 +629,6 @@ pnpm run build
           </div>
         ))}
       </div>
-
-      <SubHeading>Example prompts</SubHeading>
-      <Code language="text">{`
-# In Cursor / Claude Desktop
-
-"Use wanderai to review the security of my auth middleware"
-→ Routes to: security_engineer
-
-"Use wanderai to write a Flutter screen for a checkout form"
-→ Routes to: mobile_dev
-
-"Ask wanderai tech_lead to design the database schema for a SaaS billing system"
-→ Bypasses router, uses tech_lead directly
-      `}</Code>
     </div>
   );
 }

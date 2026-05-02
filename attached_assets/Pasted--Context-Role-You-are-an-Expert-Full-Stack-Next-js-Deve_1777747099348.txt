@@ -1,0 +1,48 @@
+# Context & Role
+You are an Expert Full-Stack Next.js Developer, Tooling Engineer, and Technical Writer. I am building the **Wander AI Auto Dev Config Hub**, a central web portal and toolset for my internal AI development ecosystem.
+
+# Tech Stack & Brand Aesthetics
+- **Framework:** Next.js (App Router, v14/15+)
+- **Styling:** Tailwind CSS, `lucide-react` icons, `@tailwindcss/typography` (for docs).
+- **Aesthetics:** Premium dark mode, deep navy to vibrant cyan gradients, sleek glassmorphism effects (backdrop blurs), and highly responsive for mobile.
+- **Backend/API:** Node.js `fs/promises` (to read local `.agent.md` files), `openai`, and `@google/genai` SDKs.
+
+# Project Scope
+Please build the complete codebase for this project, divided into four major tasks.
+
+## Task 1: The Onboarding & Chat Interface (`app/page.tsx`)
+Build a highly responsive main interface with state management.
+1. **IDE Selection Screen:** If the user hasn't selected an IDE yet, show a sleek, centrally aligned onboarding screen. Include a glowing `< />` icon and buttons for: `VSCode`, `Cursor`, `Windsurf`, and `Antigravity`. Save their selection to `localStorage`.
+2. **The Chat UI:** Once an IDE is selected, show the chat interface. 
+   - **Desktop:** Fixed left sidebar listing available agents (read from a mock or real `data/agents_config.json`), and a main right chat window.
+   - **Mobile:** A glassmorphic top-bar with a hamburger menu that triggers a smooth slide-out off-canvas sidebar for agent selection. The sidebar must have a dark backdrop overlay that closes the menu when clicked.
+
+## Task 2: The Mobile-Optimized Documentation Hub (`app/docs/...`)
+Create a modern documentation layout (using `@tailwindcss/typography` for beautiful markdown scaling).
+1. **Layout (`app/docs/layout.tsx`):** A left-hand navigation menu for desktop that converts into a hidden, slide-out hamburger menu on mobile (identical smooth transitions to the chat UI).
+2. **Pages:** Write the React code and markdown content for:
+   - **Overview:** What the Wander AI ecosystem is.
+   - **CLI Tool:** How to install the Node.js CLI globally (`npm install -g`).
+   - **MCP Integration:** Instructions for connecting the MCP server. **Crucial:** Dynamically read the IDE state saved from the home page. If they selected "Antigravity", show Antigravity-specific setup instructions. If they selected "Cursor", show Cursor instructions.
+   - **Deployment:** How to deploy the Next.js app to Vercel and set up the `.env`.
+
+## Task 3: Multi-Provider LLM API (`app/api/chat/route.ts`)
+Write the API route that handles chat streaming. It must:
+1. Accept the `agentId` and `messages`.
+2. Read the corresponding local `data/agents/{agentId}.agent.md` file using `fs/promises` to act as the System Prompt.
+3. Read `ACTIVE_PROVIDER` from the `.env` file. Dynamically route the request to either standard OpenAI (supporting OpenAI, OpenRouter, NVIDIA) or the `@google/genai` SDK (for Gemini).
+4. Return the streamed response back to the client.
+
+## Task 4: The MCP Server Code (`src/mcp-server.ts` or similar)
+Provide the standalone TypeScript code for an MCP (Model Context Protocol) server. 
+- It must register a tool called `delegate_to_wander_ai`.
+- It should read the same local `agents_config.json` and `.agent.md` files.
+- It should use a small/fast LLM to route the user's task to the correct agent ID, and a larger LLM to execute the task, returning the result to the IDE.
+
+# Instructions for Execution
+Please provide the code modularly:
+1. The necessary `package.json` dependencies and `tailwind.config.ts` updates.
+2. The UI components (`app/page.tsx`, `app/docs/layout.tsx`, `app/docs/page.tsx`).
+3. The multi-provider API route logic.
+4. The MCP Server code.
+Keep the code clean, robustly typed, and visually stunning.
