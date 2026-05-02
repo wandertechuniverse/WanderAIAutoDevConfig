@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { IDE_OPTIONS, type IdeId } from "@/hooks/use-ide-selection";
 import {
   Sparkles,
@@ -54,25 +52,33 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-// ─── Code block ──────────────────────────────────────────────────────────────
+// ─── Code blocks ─────────────────────────────────────────────────────────────
 
-function Code({ language, children }: { language: string; children: string }) {
+// Fix Strategy 1 — scrollable terminal blocks (CLI, MCP, etc.)
+// max-w-[100vw] on the outer div is the hard mobile viewport guard; overflow-x-auto
+// on the inner div handles the actual scrollbar without breaking the page layout.
+function Code({ children }: { language: string; children: string }) {
   return (
-    // Outer: overflow-hidden is the critical mobile fix — stops the pre from expanding the viewport
-    <div className="relative group mt-3 mb-2 w-full max-w-full overflow-hidden rounded-xl bg-slate-950/80 border border-slate-800/60">
+    <div className="relative group mt-3 mb-2 w-full max-w-[100vw] sm:max-w-full overflow-hidden rounded-xl bg-slate-950/80 border border-slate-800/60">
       <CopyButton text={children.trim()} />
-      {/* Inner: overflow-x-auto handles the actual horizontal scrolling */}
       <div className="w-full overflow-x-auto p-3 md:p-4">
-        <SyntaxHighlighter
-          language={language}
-          style={vscDarkPlus}
-          PreTag="div"
-          className="!rounded-none !border-0 !bg-transparent !text-[10px] md:!text-xs !my-0 !p-0"
-          customStyle={{ margin: 0, background: "transparent", width: "max-content", minWidth: "100%" }}
-        >
-          {children.trim()}
-        </SyntaxHighlighter>
+        <pre className="text-[10px] md:text-xs text-slate-300 whitespace-pre w-max min-w-full font-mono leading-relaxed">
+          <code>{children.trim()}</code>
+        </pre>
       </div>
+    </div>
+  );
+}
+
+// Fix Strategy 2 — wrapping blocks for .env files and long strings.
+// No horizontal scroll; long lines break gracefully instead of clipping.
+function CodeWrap({ children }: { language: string; children: string }) {
+  return (
+    <div className="relative group mt-3 mb-2 w-full max-w-full rounded-xl bg-slate-950/80 border border-slate-800/60 p-3 md:p-4">
+      <CopyButton text={children.trim()} />
+      <pre className="text-[10px] md:text-xs text-slate-300 whitespace-pre-wrap break-all md:break-words font-mono leading-relaxed pr-8">
+        <code>{children.trim()}</code>
+      </pre>
     </div>
   );
 }
@@ -805,7 +811,7 @@ function SectionDeployment() {
           <InlineCode>OPENAI_API_KEY</InlineCode> is needed on the server. The CLI and
           MCP server require their own key.
         </P>
-        <Code language="bash">{`
+        <CodeWrap language="bash">{`
 # API server (.env or deployment platform secrets)
 SESSION_SECRET=your-random-secret-here
 DATABASE_URL=postgresql://user:pass@host:5432/dbname
@@ -815,7 +821,7 @@ OPENAI_API_KEY=sk-...
 WANDER_ROUTER_MODEL=gpt-4o-mini   # optional
 WANDER_WORKER_MODEL=gpt-4o        # optional
 WANDER_DATA_DIR=/path/to/data     # optional
-        `}</Code>
+        `}</CodeWrap>
       </DocCard>
 
       <DocCard>
