@@ -44,7 +44,7 @@
   {
     "id": "devops_engineer",
     "name": "DevOps Engineer",
-    "role": "Manages CI/CD pipelines, infrastructure, and deployment workflows",
+    "role": "GitHub Actions, Docker, VPS deployments, Vercel config, and CI/CD automation",
     "agent_type": "worker"
   },
   {
@@ -94,5 +94,11 @@
     "name": "Performance Engineer",
     "role": "Profiles applications, identifies bottlenecks, and improves performance",
     "agent_type": "worker"
+  },
+  {
+    "id": "database_architect",
+    "name": "Database Architect",
+    "role": "PostgreSQL schema design, Supabase RLS, ORM migrations (Drizzle/Prisma), and query optimization.",
+    "agent_type": "subagent"
   }
 ]
