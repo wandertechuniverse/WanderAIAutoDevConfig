@@ -56,17 +56,20 @@ function CopyButton({ text }: { text: string }) {
 
 function Code({ language, children }: { language: string; children: string }) {
   return (
-    <div className="relative group mt-4 mb-2">
+    <div className="relative group mt-4 mb-2 w-full max-w-full">
       <CopyButton text={children.trim()} />
-      <SyntaxHighlighter
-        language={language}
-        style={vscDarkPlus}
-        PreTag="div"
-        className="rounded-xl border border-white/10 !bg-[#080d14] !text-sm !my-0 !p-5"
-        customStyle={{ margin: 0 }}
-      >
-        {children.trim()}
-      </SyntaxHighlighter>
+      {/* Scrollable shell — prevents wide content from overflowing the page on mobile */}
+      <div className="overflow-x-auto w-full max-w-full rounded-xl border border-white/10 bg-[#080d14]">
+        <SyntaxHighlighter
+          language={language}
+          style={vscDarkPlus}
+          PreTag="div"
+          className="!rounded-xl !border-0 !bg-transparent !text-xs md:!text-sm !my-0 !p-4"
+          customStyle={{ margin: 0, background: "transparent", minWidth: "max-content" }}
+        >
+          {children.trim()}
+        </SyntaxHighlighter>
+      </div>
     </div>
   );
 }
