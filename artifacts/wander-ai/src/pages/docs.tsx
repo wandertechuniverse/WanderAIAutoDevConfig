@@ -58,16 +58,17 @@ function CopyButton({ text }: { text: string }) {
 
 function Code({ language, children }: { language: string; children: string }) {
   return (
-    <div className="relative group mt-4 mb-2 w-full max-w-full">
+    // Outer: overflow-hidden is the critical mobile fix — stops the pre from expanding the viewport
+    <div className="relative group mt-3 mb-2 w-full max-w-full overflow-hidden rounded-xl bg-slate-950/80 border border-slate-800/60">
       <CopyButton text={children.trim()} />
-      {/* Scrollable shell — prevents wide content from overflowing the page on mobile */}
-      <div className="overflow-x-auto w-full max-w-full rounded-xl border border-white/10 bg-[#080d14] pb-2">
+      {/* Inner: overflow-x-auto handles the actual horizontal scrolling */}
+      <div className="w-full overflow-x-auto p-3 md:p-4">
         <SyntaxHighlighter
           language={language}
           style={vscDarkPlus}
           PreTag="div"
-          className="!rounded-xl !border-0 !bg-transparent !text-[10px] md:!text-xs !my-0 !p-4"
-          customStyle={{ margin: 0, background: "transparent", minWidth: "max-content" }}
+          className="!rounded-none !border-0 !bg-transparent !text-[10px] md:!text-xs !my-0 !p-0"
+          customStyle={{ margin: 0, background: "transparent", width: "max-content", minWidth: "100%" }}
         >
           {children.trim()}
         </SyntaxHighlighter>
@@ -325,27 +326,26 @@ function SectionCli() {
       <P>
         The <InlineCode>wanderai</InlineCode> CLI is a standalone Node.js tool that
         gives you streaming agent responses directly in your terminal — no browser
-        required. The CLI is not yet published to the npm registry; install it via a
-        local link from the cloned repository.
+        required. Clone the official repository and link the binary globally with the
+        steps below.
       </P>
 
       <DocCard>
-        <SubHeading>Step 1 — Navigate to the CLI directory</SubHeading>
-        <Code language="bash">{`cd artifacts/wander-cli`}</Code>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+          <span className="text-[10px] font-bold text-cyan-400/70 uppercase tracking-widest font-mono">Installation</span>
+        </div>
+        <Code language="bash">{`# Clone the official repository
+git clone https://github.com/wandertechuniverse/WanderAIAutoDevConfig.git
 
-        <SubHeading>Step 2 — Install dependencies</SubHeading>
-        <Code language="bash">{`pnpm install`}</Code>
+# Navigate to the CLI directory
+cd WanderAIAutoDevConfig/artifacts/wander-cli
 
-        <SubHeading>Step 3 — Link globally</SubHeading>
-        <P>
-          Running <InlineCode>npm link</InlineCode> creates a global symlink so the{" "}
-          <InlineCode>wanderai</InlineCode> command is available anywhere on your machine
-          — no npm publish required.
-        </P>
-        <Code language="bash">{`npm link`}</Code>
+# Link the binary globally
+npm install -g .
 
-        <SubHeading>Verify the installation</SubHeading>
-        <Code language="bash">{`wanderai --version`}</Code>
+# Verify installation
+wanderai --version`}</Code>
       </DocCard>
 
       {/* API Keys callout */}
