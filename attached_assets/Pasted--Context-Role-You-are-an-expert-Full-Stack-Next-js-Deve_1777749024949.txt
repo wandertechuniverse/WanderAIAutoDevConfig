@@ -1,0 +1,44 @@
+# Context & Role
+You are an expert Full-Stack Next.js Developer and Technical Writer. I am building the **Wander AI Auto Dev Config Hub**, a central web portal for an autonomous multi-agent AI orchestration system.
+
+The application has two primary sections:
+1. **The Interactive Agent Chat (`/`)**: A responsive web interface to chat with 15 specialized local AI agents.
+2. **The Documentation Hub (`/docs`)**: A beautiful, interactive guide explaining how to use our CLI, configure our MCP server, and deploy the system.
+
+# Tech Stack & Aesthetics
+- **Framework**: Next.js (App Router)
+- **Styling**: Tailwind CSS, `lucide-react` icons.
+- **Aesthetics**: Premium dark mode (`bg-slate-950`), deep navy to vibrant cyan gradients, sleek glassmorphism effects (`backdrop-blur-md`), and highly responsive.
+- **LLM Logic**: Multi-provider API handling (OpenAI, @google/genai for Gemini, OpenRouter) reading local `.agent.md` files.
+
+# Task 1: Onboarding & IDE Selection
+Create an IDE selection screen (or modal) for first-time visitors with the title "Select an IDE Agent".
+- Options must include: **VSCode**, **Cursor**, **Windsurf**, and **Antigravity**.
+- Use a sleek, glassmorphic card design. 
+- Save the user's selection in React state or localStorage. This selection MUST dynamically update the MCP integration instructions shown in the `/docs` section.
+
+# Task 2: Responsive Chat Interface (`app/page.tsx`)
+Refactor the main chat interface to be perfectly mobile-responsive:
+- **Desktop**: Fixed left sidebar listing available agents (read from `data/agents_config.json`), right-side chat window.
+- **Mobile**: A glassmorphic top-bar with a hamburger menu. Tapping it triggers a smooth slide-out off-canvas sidebar with a dark overlay. The input box must stay firmly pinned to the bottom.
+
+# Task 3: The Multi-Provider API (`app/api/chat/route.ts`)
+Write the API route to handle the chat execution.
+1. Accept `agentId` and `messages`.
+2. Read the corresponding `data/agents/{agentId}.agent.md` file using `fs/promises`.
+3. Check the `ACTIVE_PROVIDER` from `.env` (supports `openai`, `gemini`, `openrouter`, `nvidia`).
+4. Route the LLM request to the correct SDK and return the streamed or awaited response.
+
+# Task 4: The Documentation Hub (`app/docs/page.tsx` & layout)
+Create a modern documentation layout (left-hand nav, main content area). 
+**CRITICAL CSS FIX**: Ensure all `<pre>` and `<code>` blocks (especially ASCII diagrams and file trees) have `overflow-x-auto`, `w-full`, `p-4`, and use responsive text sizing (`text-xs md:text-sm`) so they do not break the mobile layout.
+
+Include the following fully written sections:
+1. **Overview:** Explain the Wander AI ecosystem (Web UI, CLI, MCP Server).
+2. **CLI Tool Install:** Terminal commands for global usage (`npm install -g wander-ai-mcp`).
+3. **IDE MCP Integration:** Step-by-step connection instructions (dynamically highlighting the IDE the user picked in Task 1).
+4. **Publishing Guide:** A step-by-step guide based on standard npm publishing practices (login, prepublishOnly script, npm publish).
+5. **Deployment:** Guide on pushing to GitHub and deploying the web UI to Vercel.
+
+# Instructions for Execution
+Please generate the complete React code, API routes, and necessary `package.json` updates. Structure the code cleanly and ensure the UI looks premium and handles mobile edge cases perfectly.
