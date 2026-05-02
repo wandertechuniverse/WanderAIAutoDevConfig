@@ -1,0 +1,42 @@
+# Context & Role
+You are an Expert AI Tooling Engineer specializing in the **Model Context Protocol (MCP)**. I want you to build an MCP Server for my internal tool called **Wander AI Auto Dev Config**.
+
+I have a multi-agent system defined by a `data/agents_config.json` file and a folder of markdown files `data/agents/*.agent.md` that contain the system prompts for 15 specialized roles (Frontend, Backend, Tech Lead, etc.). 
+
+I want to expose this system as a native tool to IDEs (like Cursor, Claude Desktop, and compatible Copilot environments) so developers can tag the Orchestrator in their native chat, and the Orchestrator will automatically route their request to the correct sub-agent.
+
+# Tech Stack
+- Runtime: Node.js (TypeScript)
+- Framework: `@modelcontextprotocol/sdk` (The official MCP Node SDK)
+- LLM Router: `openai` SDK (for the Orchestrator to decide which agent to use, and to generate the final response).
+- File System: Native Node `fs/promises`
+
+# Directory Structure Expectations
+The server should run in a repository containing:
+1. `.env` (holding OPENAI_API_KEY)
+2. `data/agents_config.json` (Array of agents with: `id`, `name`, `role`, `agent_type`)
+3. `data/agents/{agentId}.agent.md` (The system prompts for each agent)
+
+# Core Features to Build
+
+**1. The MCP Server Initialization (`src/index.ts`)**
+- Initialize a new MCP Server named "wander-ai-orchestrator".
+- Expose a primary tool via `server.setRequestHandler(CallToolRequestSchema, ...)` named `delegate_to_wander_ai`.
+
+**2. The Orchestrator Routing Logic**
+When the `delegate_to_wander_ai` tool is called by the IDE with a user's `task_description`:
+- **Step 1:** Read `data/agents_config.json` and inject the list of available agents into a hidden background LLM call. Ask this LLM: "Which agent ID is best suited for this task?"
+- **Step 2:** Parse the chosen `agentId` from the response.
+- **Step 3:** Read the corresponding markdown file: `data/agents/{agentId}.agent.md`.
+- **Step 4:** Make the final LLM call to solve the user's task, using the loaded markdown file as the System Prompt.
+- **Step 5:** Return the generated code/response back to the IDE chat via the MCP tool response format, prefixing the message with a brand tag: `[Wander AI: {Agent Name} Executing Task]`.
+
+**3. Tool Definitions**
+- Expose the tool schema cleanly so the host IDE knows what parameters to pass (e.g., `user_query`, `current_file_context`).
+
+# Instructions for Execution
+1. Provide the complete `package.json` with all required MCP and TypeScript dependencies.
+2. Provide the `tsconfig.json`.
+3. Provide the full code for `src/index.ts` implementing the MCP server, the dynamic routing logic, and the file reading utilities.
+4. Provide a `README.md` explaining exactly how to connect this MCP server to **Cursor** and **Claude Desktop** by updating their respective config files.
+5. Write robust error handling (e.g., if an agent ID isn't found, fallback to the Orchestrator persona).

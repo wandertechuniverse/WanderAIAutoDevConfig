@@ -1,0 +1,25 @@
+{
+  "name": "wander-ai-mcp",
+  "version": "1.0.0",
+  "description": "Wander AI Auto Dev Config — MCP server for Cursor, Claude Desktop, and Copilot",
+  "type": "module",
+  "bin": {
+    "wander-ai-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "dotenv": "^16.4.5",
+    "openai": "^4.103.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.3"
+  },
+  "license": "MIT"
+}
