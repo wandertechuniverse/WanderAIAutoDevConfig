@@ -1,12 +1,11 @@
 import { Router } from "express";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
-import { fileURLToPath } from "url";
 import { openai } from "@workspace/integrations-openai-ai-server";
 
 const router = Router();
 
-const DATA_DIR = join(fileURLToPath(import.meta.url), "..", "..", "..", "data");
+const DATA_DIR = join(process.cwd(), "data");
 const FALLBACK_SYSTEM_PROMPT = `You are a helpful engineering assistant for the Wander AI team. 
 You help with software development, architecture, and technical decisions.`;
 
