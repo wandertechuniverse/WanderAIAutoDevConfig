@@ -1,0 +1,41 @@
+# Context & Role
+You are an expert Node.js CLI Developer. I want you to build a beautifully designed Command Line Interface (CLI) tool called **Wander AI Auto Dev Config**. 
+
+I have a system of 15 specialized AI agents defined by local Markdown persona files. Instead of a web UI, I want developers to run this tool in their terminal (inside any IDE), select an agent, and get AI assistance directly in their console.
+
+# Tech Stack
+- Runtime: Node.js
+- CLI Framework: `commander`
+- Interactive Prompts: `@clack/prompts` (Crucial: I want this to look beautiful, modern, and sleek in the terminal, similar to how Vite or Next.js init scripts look).
+- Styling: `picocolors` (for terminal text colors)
+- LLM Integration: `openai` SDK (for streaming responses)
+
+# Directory Structure Expectations
+The CLI should be designed to run in a project root that contains:
+1. `.env` (holding the OPENAI_API_KEY)
+2. `data/agents_config.json` (array of agents with id, name, role)
+3. `data/agents/{agentId}.agent.md` (the system prompts)
+
+# Core Features to Build
+
+**1. The Interactive Menu (`index.js` or `cli.js`)**
+- When the user runs the command, clear the console and display a beautiful welcome banner for "Wander AI Auto Dev Config".
+- Read the `data/agents_config.json` file.
+- Use `@clack/prompts` to display an interactive `select` menu. Allow the user to use their arrow keys to pick an agent from the list.
+- Once selected, use a `@clack/prompts` `text` input to ask: "What task do you need assistance with?"
+
+**2. LLM Execution & Streaming**
+- Read the corresponding `{agentId}.agent.md` file using the `fs` module to act as the System Prompt.
+- Call the OpenAI API (using `gpt-4o` or similar).
+- Stream the response back to the terminal in real-time so the user doesn't have to wait for the whole block of code to generate.
+- Use a `@clack/prompts` spinner while connecting, and format the output cleanly.
+
+**3. Global Command Setup**
+- Include the `#!/usr/bin/env node` shebang at the top.
+- Provide the `package.json` configuration showing how to map the `"bin"` field so the user can install this globally and just type `wander-ai` anywhere on their computer.
+
+# Instructions for Execution
+1. Provide the exact `package.json` dependencies I need.
+2. Provide the complete Node.js CLI script.
+3. Write the code modularly but keep it simple enough to run as a single global tool.
+4. Prioritize a premium terminal UX. Use colors (cyan/blue for the Wander AI brand) and elegant spacing.
