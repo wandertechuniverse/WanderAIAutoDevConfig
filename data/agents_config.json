@@ -1,0 +1,96 @@
+{
+  "agency_name": "Autonomous Development Hub",
+  "version": "1.0",
+  "agents": [
+    {
+      "id": "frontend_dev",
+      "name": "Frontend Developer Agent",
+      "role": "Frontend Development",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "backend_dev",
+      "name": "Backend Developer Agent",
+      "role": "Backend Development",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "full_stack_dev",
+      "name": "Full Stack Developer Agent",
+      "role": "Full Stack Development",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "mobile_dev",
+      "name": "Mobile Developer Agent",
+      "role": "Mobile Application Development",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "devops_eng",
+      "name": "DevOps Engineer Agent",
+      "role": "Infrastructure and Pipelines",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "dba",
+      "name": "Database Administrator Agent",
+      "role": "Data Management",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "data_eng",
+      "name": "Data Engineer Agent",
+      "role": "Data Architecture and ETL",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "ml_eng",
+      "name": "Machine Learning Engineer Agent",
+      "role": "AI/ML Modeling and Deployment",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "security_eng",
+      "name": "Security Engineer Agent",
+      "role": "Application and Infrastructure Security",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "qa_eng",
+      "name": "QA Engineer Agent",
+      "role": "Quality Assurance and Testing",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "solutions_arch",
+      "name": "Solutions Architect Agent",
+      "role": "System Design",
+      "agent_type": "user-invocable"
+    },
+    {
+      "id": "sre",
+      "name": "Site Reliability Engineer Agent",
+      "role": "System Reliability",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "embedded_eng",
+      "name": "Embedded Systems Engineer Agent",
+      "role": "Hardware/Software Integration",
+      "agent_type": "subagent"
+    },
+    {
+      "id": "tech_lead",
+      "name": "Tech Lead Agent",
+      "role": "Technical Leadership",
+      "agent_type": "user-invocable"
+    },
+    {
+      "id": "eng_manager",
+      "name": "Engineering Manager Agent",
+      "role": "Team Management and Operations",
+      "agent_type": "user-invocable"
+    }
+  ]
+}
