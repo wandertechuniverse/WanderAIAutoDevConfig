@@ -1005,7 +1005,7 @@ export function DocsPage() {
 
         {/* Content */}
         <ScrollArea className="flex-1 min-h-0">
-          <main className="max-w-3xl mx-auto px-5 md:px-10 py-8 pb-20">
+          <main className="max-w-3xl mx-auto px-4 md:px-8 py-8 pb-20">
             {/* Desktop page header */}
             <div className="hidden md:flex items-center justify-between mb-2 pb-6 border-b border-slate-800">
               <div className="flex items-center gap-3">
