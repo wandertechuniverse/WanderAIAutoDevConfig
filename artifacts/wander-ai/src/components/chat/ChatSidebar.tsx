@@ -1,6 +1,7 @@
 import { Agent } from "@workspace/api-client-react/src/generated/api.schemas";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { BrainCircuit, Cpu, Sparkles, X } from "lucide-react";
+import { BrainCircuit, BookOpen, Cpu, Sparkles, X } from "lucide-react";
+import { Link } from "wouter";
 
 interface ChatSidebarProps {
   agents: Agent[];
@@ -110,7 +111,14 @@ export function ChatSidebar({
       </ScrollArea>
 
       {/* Footer */}
-      <div className="p-3 border-t border-slate-800 shrink-0">
+      <div className="p-3 border-t border-slate-800 shrink-0 space-y-2">
+        <Link
+          href="/docs"
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 border border-transparent transition-all"
+        >
+          <BookOpen size={13} />
+          Documentation
+        </Link>
         <p className="text-[10px] text-muted-foreground/30 font-mono text-center">
           {agents.length > 0 ? `${agents.length} agents loaded` : "loading agents\u2026"}
         </p>

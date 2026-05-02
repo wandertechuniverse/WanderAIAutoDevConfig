@@ -3,7 +3,8 @@ import { useListAgents } from "@workspace/api-client-react";
 import type { Agent, ChatMessage } from "@workspace/api-client-react/src/generated/api.schemas";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 import { ChatWindow } from "@/components/chat/ChatWindow";
-import { Menu, Sparkles } from "lucide-react";
+import { Link } from "wouter";
+import { BookOpen, Menu, Sparkles } from "lucide-react";
 
 export function MainChat() {
   const { data: agents, isLoading } = useListAgents();
@@ -36,13 +37,22 @@ export function MainChat() {
             <span className="ml-2 text-[10px] text-muted-foreground/50 font-mono">IDE Agent Config</span>
           </div>
         </div>
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-          aria-label="Open agent menu"
-        >
-          <Menu size={20} />
-        </button>
+        <div className="flex items-center gap-1">
+          <Link
+            href="/docs"
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+            aria-label="Documentation"
+          >
+            <BookOpen size={18} />
+          </Link>
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+            aria-label="Open agent menu"
+          >
+            <Menu size={20} />
+          </button>
+        </div>
       </header>
 
       {/* Body: sidebar + chat */}

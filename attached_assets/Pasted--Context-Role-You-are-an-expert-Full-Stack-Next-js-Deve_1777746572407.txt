@@ -1,0 +1,44 @@
+# Context & Role
+You are an expert Full-Stack Next.js Developer and Technical Writer. I am building the **Wander AI Auto Dev Config Hub**, a central web portal for my AI development ecosystem.
+
+The project must serve two purposes:
+1. **The Interactive Agent Chat (`/`)**: A responsive web interface to chat with 15 specialized local AI agents.
+2. **The Developer Documentation (`/docs`)**: A beautiful documentation site explaining how to use our CLI, configure our MCP server, and deploy the system.
+
+# Tech Stack & Brand
+- Framework: Next.js (App Router, v16.x)
+- Styling: Tailwind CSS, `lucide-react` icons.
+- Aesthetics: Premium dark mode, deep navy to vibrant cyan gradients, sleek glassmorphism effects (backdrop-blurs), and highly responsive for mobile.
+- LLM Logic: Multi-provider API handling (OpenAI, Gemini, OpenRouter) reading local `.agent.md` files.
+
+# Task 1: Main Application Layout (`app/layout.tsx`)
+Create a root layout that includes a sleek, global top navigation bar allowing users to seamlessly switch between the "Agent Chat" (`/`) and "Documentation" (`/docs`). 
+
+# Task 2: Responsive Chat Interface (`app/page.tsx`)
+Recreate the main chat interface. 
+- Desktop: Fixed left sidebar listing available agents (read from `data/agents_config.json`), right chat window.
+- Mobile: A glassmorphic top-bar with a hamburger menu that triggers a smooth slide-out off-canvas sidebar for agent selection.
+- Chat input must stream responses from `/api/chat`.
+
+# Task 3: The Documentation Hub (`app/docs/page.tsx` & layout)
+Create a modern documentation layout (similar to Vercel or Tailwind docs). It should have a left-hand navigation menu for topics and a main content area for reading. 
+
+Please write the complete React code and content for the following documentation sections:
+1. **Overview:** What is the Wander AI Dev Config ecosystem.
+2. **CLI Tool Install:** A guide showing the terminal commands to install and run the Node.js CLI globally (`npm install -g wander-ai`).
+3. **IDE MCP Integration:** Step-by-step instructions on how to add the built `dist/index.js` MCP server to **Cursor** and **Claude Desktop** settings.
+4. **Deployment Guide:** A guide explaining how to push this repository to **GitHub** and deploy the Next.js web portal to **Vercel** or a VPS, including required `.env` variables.
+
+# Task 4: The Multi-Provider API (`app/api/chat/route.ts`)
+Write the API route that handles the chat. It must:
+1. Accept the `agentId` and `messages`.
+2. Read the local `data/agents/{agentId}.agent.md` file using `fs/promises`.
+3. Read the `ACTIVE_PROVIDER` from the `.env` file and route the prompt using either the standard OpenAI SDK (for OpenAI/OpenRouter/NVIDIA) or the `@google/genai` SDK for Gemini.
+4. Return the response back to the client.
+
+# Instructions for Execution
+Please provide the code modularly:
+1. The necessary `package.json` additions.
+2. The UI components (`layout.tsx`, `page.tsx`, `docs/page.tsx`).
+3. The API route logic. 
+Keep the code clean, heavily commented, and visually stunning.
