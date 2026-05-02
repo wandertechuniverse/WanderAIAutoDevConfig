@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { readFileSync } from "fs";
-import { join } from "path";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const router = Router();
 
-const DATA_DIR = join(process.cwd(), "data");
+const DATA_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "data");
 
 router.get("/agents", (req, res) => {
   try {
