@@ -60,14 +60,19 @@ async function loadAgents(): Promise<AgentConfig[]> {
 
 async function loadPersona(agentId: string): Promise<string> {
   const personaPath = join(DATA_DIR, "agents", `${agentId}.agent.md`);
-  if (!existsSync(personaPath)) {
-    // Graceful fallback — generic engineering assistant
-    return (
-      `You are a highly skilled software engineer specializing in ${agentId.replace(/_/g, " ")}. ` +
-      `You write clean, production-ready code with clear explanations.`
-    );
+  if (existsSync(personaPath)) {
+    return readFile(personaPath, "utf8");
   }
-  return readFile(personaPath, "utf8");
+  // Fallback 1: .github/copilot-instructions.md (orchestrator persona)
+  const copilotFallback = join(process.cwd(), ".github", "copilot-instructions.md");
+  if (existsSync(copilotFallback)) {
+    return readFile(copilotFallback, "utf8");
+  }
+  // Fallback 2: inline generic prompt
+  return (
+    `You are a highly skilled software engineer. ` +
+    `You write clean, production-ready code with clear explanations.`
+  );
 }
 
 // ─── Orchestrator logic ───────────────────────────────────────────────────────
@@ -75,8 +80,8 @@ async function loadPersona(agentId: string): Promise<string> {
 async function routeToAgent(
   openai: OpenAI,
   agents: AgentConfig[],
-  userQuery: string,
-  fileContext: string,
+  taskDescription: string,
+  codeContext: string,
 ): Promise<AgentConfig> {
   const agentList = agents
     .map((a) => `- id: "${a.id}"  |  name: ${a.name}  |  role: ${a.role}`)
@@ -110,7 +115,7 @@ Respond with ONLY the agent id, nothing else.`;
       { role: "system", content: routerSystemPrompt },
       {
         role: "user",
-        content: `Task: ${userQuery}${fileContext ? `\n\nFile context:\n${fileContext}` : ""}`,
+        content: `Task: ${taskDescription}${codeContext ? `\n\nCode context:\n${codeContext}` : ""}`,
       },
     ],
     max_tokens: 32,
@@ -133,12 +138,12 @@ async function executeTask(
   openai: OpenAI,
   agent: AgentConfig,
   systemPrompt: string,
-  userQuery: string,
-  fileContext: string,
+  taskDescription: string,
+  codeContext: string,
 ): Promise<string> {
-  const userMessage = fileContext
-    ? `${userQuery}\n\n---\nCurrent file context:\n\`\`\`\n${fileContext}\n\`\`\``
-    : userQuery;
+  const userMessage = codeContext
+    ? `${taskDescription}\n\n---\nCurrent code context:\n\`\`\`\n${codeContext}\n\`\`\``
+    : taskDescription;
 
   const completion = await openai.chat.completions.create({
     model: WORKER_MODEL,
@@ -173,19 +178,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       inputSchema: {
         type: "object",
         properties: {
-          user_query: {
+          task_description: {
             type: "string",
             description:
               "The task, question, or instruction. Be as specific as possible.",
           },
-          current_file_context: {
+          current_code_context: {
             type: "string",
             description:
               "(Optional) Paste the current file content or a code snippet " +
               "so the agent has full context.",
           },
         },
-        required: ["user_query"],
+        required: ["task_description"],
       },
     },
     {
@@ -212,16 +217,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             type: "string",
             description: "The agent ID to use (e.g. 'tech_lead', 'backend_dev').",
           },
-          user_query: {
+          task_description: {
             type: "string",
             description: "The task or question for this agent.",
           },
-          current_file_context: {
+          current_code_context: {
             type: "string",
             description: "(Optional) Current file content or code snippet.",
           },
         },
-        required: ["agent_id", "user_query"],
+        required: ["agent_id", "task_description"],
       },
     },
   ],
@@ -265,11 +270,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   // ── ask_specific_agent ────────────────────────────────────────────────────
   if (name === "ask_specific_agent") {
     const agentId = String(args?.agent_id ?? "").trim();
-    const userQuery = String(args?.user_query ?? "").trim();
-    const fileContext = String(args?.current_file_context ?? "").trim();
+    const taskDescription = String(args?.task_description ?? "").trim();
+    const codeContext = String(args?.current_code_context ?? "").trim();
 
-    if (!agentId || !userQuery) {
-      throw new McpError(ErrorCode.InvalidParams, "agent_id and user_query are required.");
+    if (!agentId || !taskDescription) {
+      throw new McpError(ErrorCode.InvalidParams, "agent_id and task_description are required.");
     }
 
     const agents = await loadAgents();
@@ -283,7 +288,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     const systemPrompt = await loadPersona(agent.id);
-    const response = await executeTask(openai, agent, systemPrompt, userQuery, fileContext);
+    const response = await executeTask(openai, agent, systemPrompt, taskDescription, codeContext);
 
     return {
       content: [
@@ -297,23 +302,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   // ── delegate_to_wander_ai ─────────────────────────────────────────────────
   if (name === "delegate_to_wander_ai") {
-    const userQuery = String(args?.user_query ?? "").trim();
-    const fileContext = String(args?.current_file_context ?? "").trim();
+    const taskDescription = String(args?.task_description ?? "").trim();
+    const codeContext = String(args?.current_code_context ?? "").trim();
 
-    if (!userQuery) {
-      throw new McpError(ErrorCode.InvalidParams, "user_query is required.");
+    if (!taskDescription) {
+      throw new McpError(ErrorCode.InvalidParams, "task_description is required.");
     }
 
     const agents = await loadAgents();
 
     // Step 1: route
-    const agent = await routeToAgent(openai, agents, userQuery, fileContext);
+    const agent = await routeToAgent(openai, agents, taskDescription, codeContext);
 
     // Step 2: load persona
     const systemPrompt = await loadPersona(agent.id);
 
     // Step 3: execute
-    const response = await executeTask(openai, agent, systemPrompt, userQuery, fileContext);
+    const response = await executeTask(openai, agent, systemPrompt, taskDescription, codeContext);
 
     // Step 4: return with brand tag
     return {
@@ -336,10 +341,10 @@ async function main() {
   await server.connect(transport);
   // MCP servers must not write to stdout (it's the protocol channel).
   // Log startup info to stderr only.
-  process.stderr.write("[wander-ai-mcp] Server started. Listening via stdio.\n");
+  process.stderr.write("[wanderai-mcp] Server started. Listening via stdio.\n");
 }
 
 main().catch((err) => {
-  process.stderr.write(`[wander-ai-mcp] Fatal error: ${err}\n`);
+  process.stderr.write(`[wanderai-mcp] Fatal error: ${err}\n`);
   process.exit(1);
 });

@@ -91,6 +91,11 @@
       "name": "Engineering Manager Agent",
       "role": "Team Management and Operations",
       "agent_type": "user-invocable"
+    },
+    {"id": "mobile_dev",
+      "name": "Mobile Developer Agent",
+      "role": "Cross-Platform Mobile Application Development (Flutter/Dart)",
+      "agent_type": "subagent"
     }
   ]
 }

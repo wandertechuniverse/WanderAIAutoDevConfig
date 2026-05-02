@@ -1,0 +1,35 @@
+# Context & Role
+You are an Expert AI Tooling Engineer specializing in the Model Context Protocol (MCP). I need you to write the complete TypeScript code for a custom MCP Server called "Wander AI Auto Dev Config".
+
+This MCP server will act as an "Orchestrator". When an IDE (like Cursor or Claude) calls this tool, it needs to dynamically read local JSON/Markdown files, use a fast LLM to decide which specialized agent should handle the task, and then use a smarter LLM to actually execute the task using that agent's custom instructions.
+
+# Directory Structure Expectations
+The server you build will run in a Node.js environment where the following local files exist:
+- `.env` (contains OPENAI_API_KEY)
+- `data/agents_config.json` (An array of objects with `id`, `name`, `role`, `agent_type`)
+- `data/agents/{agentId}.agent.md` (The system prompts for each agent, e.g., `mobile_dev.agent.md`)
+- `.github/copilot-instructions.md` (The fallback orchestrator prompt)
+
+# Task 1: Setup Files
+Provide the complete `package.json` and `tsconfig.json` files. 
+- The project must use `"type": "module"`.
+- Required dependencies: `@modelcontextprotocol/sdk`, `openai`, `dotenv`.
+- Required dev dependencies: `typescript`, `@types/node`.
+- Include standard build and start scripts (`tsc` and `node dist/index.js`).
+
+# Task 2: The MCP Server (`src/index.ts`)
+Write the complete `src/index.ts` file using the `@modelcontextprotocol/sdk/server/stdio.js` transport.
+
+**A. Tool Definition:**
+Register a tool called `delegate_to_wander_ai`.
+It should require a `task_description` (string) and accept an optional `current_code_context` (string).
+
+**B. Tool Execution (The Routing Logic):**
+When the tool is called, execute the following flow:
+1. **Read Config:** Read `data/agents_config.json` using Node's `fs/promises`.
+2. **Routing:** Make an OpenAI API call (using `gpt-4o-mini`) acting as a router. Send it the user's `task_description` and the list of available agents. Ask it to reply with *only* the ID of the best-suited agent.
+3. **Load Persona:** Read the corresponding markdown file from `data/agents/{agentId}.agent.md`. If the file is missing, fallback to `.github/copilot-instructions.md`.
+4. **Execution:** Make a second OpenAI API call (using `gpt-4o`). Use the loaded markdown file as the `system` role, and pass the user's task and code context as the `user` role.
+5. **Return:** Return the LLM's response formatted according to the MCP SDK standards. Prefix the text response with `[Wander AI: {Agent Name} Executing Task]` so the user knows which sub-agent handled the request.
+
+Ensure the code has robust error handling and uses `dotenv` to load the API key.
