@@ -24,6 +24,12 @@
     "agent_type": "worker"
   },
   {
+    "id": "mobile_dev",
+    "name": "Mobile Developer",
+    "role": "Builds cross-platform iOS and Android apps with Flutter and Dart using Riverpod",
+    "agent_type": "worker"
+  },
+  {
     "id": "backend_dev",
     "name": "Backend Developer",
     "role": "Implements API routes, business logic, and server-side systems",

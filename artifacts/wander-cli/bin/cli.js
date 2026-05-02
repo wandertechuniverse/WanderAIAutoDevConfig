@@ -21,8 +21,8 @@ import OpenAI from 'openai';
 
 const program = new Command();
 program
-  .name('wander-ai')
-  .description('Wander AI Auto Dev Config — IDE agent CLI')
+  .name('wanderai')
+  .description('WanderAI Auto Dev Config — IDE agent CLI')
   .version('1.0.0')
   .option('-d, --data <path>', 'path to your data directory', 'data')
   .option('-m, --model <model>', 'OpenAI model to use', 'gpt-4o')
@@ -43,7 +43,7 @@ function printBanner() {
   console.log('  ' + bar);
   console.log(
     '  ' +
-    pc.bold(pc.cyan('  ⚡  WANDER AI')) +
+    pc.bold(pc.cyan('  ⚡  WANDERAI')) +
     '  ' +
     pc.dim('Auto Dev Config'),
   );
@@ -154,7 +154,7 @@ async function main() {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const agents = loadAgents();
 
-  intro(pc.cyan('  Wander AI') + pc.dim('  —  select an agent to begin'));
+  intro(pc.cyan('  WanderAI') + pc.dim('  —  select an agent to begin'));
 
   // ── Agent selection
   const agentId = await select({
@@ -184,7 +184,7 @@ async function main() {
     });
 
     if (isCancel(task)) {
-      outro(pc.cyan('Session ended.') + pc.dim('  Run ') + pc.white('wander-ai') + pc.dim(' to start a new one.'));
+      outro(pc.cyan('Session ended.') + pc.dim('  Run ') + pc.white('wanderai') + pc.dim(' to start a new one.'));
       process.exit(0);
     }
 

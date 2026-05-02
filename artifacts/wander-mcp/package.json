@@ -1,10 +1,10 @@
 {
-  "name": "wander-ai-mcp",
+  "name": "wanderai-mcp",
   "version": "1.0.0",
-  "description": "Wander AI Auto Dev Config — MCP server for Cursor, Claude Desktop, and Copilot",
+  "description": "WanderAI Auto Dev Config — MCP server for Cursor, Claude Desktop, and Copilot",
   "type": "module",
   "bin": {
-    "wander-ai-mcp": "./dist/index.js"
+    "wanderai-mcp": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc",

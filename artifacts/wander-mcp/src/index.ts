@@ -90,7 +90,8 @@ ${agentList}
 
 Rules:
 - For architecture / high-level decisions → prefer tech_lead or engineering_manager
-- For UI / React / CSS → prefer frontend_dev or ui_ux_designer
+- For UI / React / CSS / web frontend → prefer frontend_dev or ui_ux_designer
+- For Flutter / Dart / iOS / Android / mobile → prefer mobile_dev
 - For APIs / server logic → prefer backend_dev or api_designer
 - For databases / migrations → prefer database_engineer
 - For CI/CD / infra → prefer devops_engineer
@@ -155,7 +156,7 @@ async function executeTask(
 // ─── MCP Server ───────────────────────────────────────────────────────────────
 
 const server = new Server(
-  { name: "wander-ai-orchestrator", version: "1.0.0" },
+  { name: "wanderai-orchestrator", version: "1.0.0" },
   { capabilities: { tools: {} } },
 );
 

@@ -1,16 +1,16 @@
 {
-  "name": "wander-ai-cli",
+  "name": "wanderai-cli",
   "version": "1.0.0",
-  "description": "Wander AI Auto Dev Config — terminal CLI for IDE AI agents",
+  "description": "WanderAI Auto Dev Config — terminal CLI for IDE AI agents",
   "type": "module",
   "bin": {
-    "wander-ai": "./bin/cli.js"
+    "wanderai": "./bin/cli.js"
   },
   "scripts": {
     "start": "node ./bin/cli.js",
     "dev": "node ./bin/cli.js"
   },
-  "keywords": ["ai", "cli", "agents", "ide", "wander-ai"],
+  "keywords": ["ai", "cli", "agents", "ide", "wanderai"],
   "license": "MIT",
   "dependencies": {
     "@clack/prompts": "^0.9.1",
