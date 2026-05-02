@@ -1,0 +1,29 @@
+# UI Standardization & Mobile Fixes for Documentation Pages
+
+I need to overhaul the remaining documentation pages (`Overview`, `CLI Tool`, `MCP Integration`, and `Deployment`) so they perfectly match the premium aesthetic of "The 16 Agents" page and fix all mobile rendering issues (specifically horizontal clipping on code blocks).
+
+## Step 1: Create a Universal `DocCard` Wrapper
+Create a reusable wrapper component for documentation sections. 
+- **Style:** Dark background (`bg-slate-900/40`), subtle border (`border border-slate-800/60`), `rounded-xl`, and `p-4 md:p-5`.
+- **Use Case:** Every major section (e.g., "Web Chat UI", "Global install", "Step 1 — Build the server", "Deploy to Vercel") must be wrapped in this card style. Include a left-aligned colored indicator dot next to the section titles inside these cards.
+
+## Step 2: Fix Code Block Mobile Overflow (CRITICAL)
+Looking at the current Deployment, CLI, and MCP pages, the `<pre>` and `<code>` blocks are extending past the screen edge on mobile. 
+- Apply `overflow-x-auto` to the immediate parent container of EVERY code block.
+- Apply `max-w-full` to ensure it respects the screen width.
+- Reduce the font size of code text on mobile: use `text-[10px] md:text-xs` or `text-xs md:text-sm`.
+- Add `pb-2` to the bottom padding of code blocks so the horizontal scrollbar doesn't overlap the last line of code.
+- Ensure long comment lines or environment variables (like `DATABASE_URL=...`) do not break the layout.
+
+## Step 3: Fix the "Your IDE" Selector (MCP Integration Page)
+The IDE toggle buttons (VSCode, Cursor, Windsurf, Antigravity) are likely causing layout issues on small screens.
+- Update the container for these buttons to use `flex flex-wrap gap-2` so they cleanly wrap to a second line on mobile, OR use `flex overflow-x-auto snap-x hide-scrollbar` so the user can swipe through them horizontally. 
+
+## Step 4: Apply to Specific Pages
+Please refactor the following files applying the above rules:
+1. **Overview Page:** Wrap the three tool descriptions (Web Chat UI, CLI Tool, MCP Server) in `DocCard`s.
+2. **CLI Tool Page:** Wrap "Global install" and "Usage" in `DocCard`s. Ensure the terminal code blocks inside them have the `overflow-x-auto` fix. 
+3. **MCP Integration Page:** Wrap "Step 1" and "Step 2" in `DocCard`s. Apply the mobile flex wrap to the IDE buttons.
+4. **Deployment Page:** Wrap "Environment variables", "Deploy to Replit", and "Deploy to Vercel" in `DocCard`s. The `.env` code block MUST be horizontally scrollable.
+
+Ensure all page titles (h1) maintain the icon + bold white text + gray subtitle structure seen on the Agents page.

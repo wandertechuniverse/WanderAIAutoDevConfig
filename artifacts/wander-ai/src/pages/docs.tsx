@@ -61,12 +61,12 @@ function Code({ language, children }: { language: string; children: string }) {
     <div className="relative group mt-4 mb-2 w-full max-w-full">
       <CopyButton text={children.trim()} />
       {/* Scrollable shell — prevents wide content from overflowing the page on mobile */}
-      <div className="overflow-x-auto w-full max-w-full rounded-xl border border-white/10 bg-[#080d14]">
+      <div className="overflow-x-auto w-full max-w-full rounded-xl border border-white/10 bg-[#080d14] pb-2">
         <SyntaxHighlighter
           language={language}
           style={vscDarkPlus}
           PreTag="div"
-          className="!rounded-xl !border-0 !bg-transparent !text-xs md:!text-sm !my-0 !p-4"
+          className="!rounded-xl !border-0 !bg-transparent !text-[10px] md:!text-xs !my-0 !p-4"
           customStyle={{ margin: 0, background: "transparent", minWidth: "max-content" }}
         >
           {children.trim()}
@@ -110,6 +110,22 @@ function InlineCode({ children }: { children: React.ReactNode }) {
 function Callout({ children }: { children: React.ReactNode }) {
   return (
     <div className="my-4 px-4 py-3 rounded-lg border border-cyan-500/20 bg-cyan-500/5 text-sm text-cyan-200/80 leading-relaxed">
+      {children}
+    </div>
+  );
+}
+
+function DocCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      className={[
+        "bg-slate-900/40 border border-slate-800/60 rounded-xl p-4 md:p-5 my-5 overflow-hidden",
+        "[&>h3:first-child]:mt-0",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
       {children}
     </div>
   );
@@ -313,25 +329,27 @@ function SectionCli() {
         local link from the cloned repository.
       </P>
 
-      <SubHeading>Step 1 — Navigate to the CLI directory</SubHeading>
-      <Code language="bash">{`cd artifacts/wander-cli`}</Code>
+      <DocCard>
+        <SubHeading>Step 1 — Navigate to the CLI directory</SubHeading>
+        <Code language="bash">{`cd artifacts/wander-cli`}</Code>
 
-      <SubHeading>Step 2 — Install dependencies</SubHeading>
-      <Code language="bash">{`pnpm install`}</Code>
+        <SubHeading>Step 2 — Install dependencies</SubHeading>
+        <Code language="bash">{`pnpm install`}</Code>
 
-      <SubHeading>Step 3 — Link globally</SubHeading>
-      <P>
-        Running <InlineCode>npm link</InlineCode> creates a global symlink so the{" "}
-        <InlineCode>wanderai</InlineCode> command is available anywhere on your machine —
-        no npm publish required.
-      </P>
-      <Code language="bash">{`npm link`}</Code>
+        <SubHeading>Step 3 — Link globally</SubHeading>
+        <P>
+          Running <InlineCode>npm link</InlineCode> creates a global symlink so the{" "}
+          <InlineCode>wanderai</InlineCode> command is available anywhere on your machine
+          — no npm publish required.
+        </P>
+        <Code language="bash">{`npm link`}</Code>
 
-      <SubHeading>Verify the installation</SubHeading>
-      <Code language="bash">{`wanderai --version`}</Code>
+        <SubHeading>Verify the installation</SubHeading>
+        <Code language="bash">{`wanderai --version`}</Code>
+      </DocCard>
 
       {/* API Keys callout */}
-      <div className="mt-6 rounded-xl border border-amber-500/20 bg-amber-500/5 backdrop-blur-sm overflow-hidden">
+      <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 backdrop-blur-sm overflow-hidden">
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-amber-500/10 bg-amber-500/10">
           <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest font-mono">Important — API Keys</span>
         </div>
@@ -359,7 +377,8 @@ function SectionCli() {
       </div>
 
       <SubHeading>Usage</SubHeading>
-      <Code language="bash">{`
+      <DocCard>
+        <Code language="bash">{`
 # Interactive REPL — auto-routes every message to the best agent
 wanderai
 
@@ -374,7 +393,8 @@ wanderai --no-stream
 
 # Help
 wanderai --help
-      `}</Code>
+        `}</Code>
+      </DocCard>
 
       <SubHeading>Session flow</SubHeading>
       <Code language="text">{`
@@ -574,25 +594,29 @@ function SectionMcp() {
       </div>
 
       {/* Step 1: Build */}
-      <SubHeading>Step 1 — Build the server</SubHeading>
-      <Code language="bash">{`cd artifacts/wander-mcp
+      <DocCard>
+        <SubHeading>Step 1 — Build the server</SubHeading>
+        <Code language="bash">{`cd artifacts/wander-mcp
 pnpm install
 pnpm run build
 # Output: dist/index.js`}</Code>
+      </DocCard>
 
       {/* Step 2: IDE-specific config */}
-      <SubHeading>Step 2 — Add to {ideLabel}</SubHeading>
+      <DocCard>
+        <SubHeading>Step 2 — Add to {ideLabel}</SubHeading>
 
-      {meta.extraNote && <Callout>{meta.extraNote}</Callout>}
+        {meta.extraNote && <Callout>{meta.extraNote}</Callout>}
 
-      <P>
-        Open <InlineCode>{meta.configPath}</InlineCode> (create it if it does not exist)
-        and add the entry below. Replace the paths with absolute paths on your machine.
-      </P>
+        <P>
+          Open <InlineCode>{meta.configPath}</InlineCode> (create it if it does not exist)
+          and add the entry below. Replace the paths with absolute paths on your machine.
+        </P>
 
-      <Code language="json">{configSnippet}</Code>
+        <Code language="json">{configSnippet}</Code>
 
-      <P>{meta.restartNote}</P>
+        <P>{meta.restartNote}</P>
+      </DocCard>
 
       {/* Step 3: Invoke */}
       <SubHeading>Step 3 — Invoke WanderAI</SubHeading>
@@ -774,13 +798,14 @@ function SectionDeployment() {
         that serves <InlineCode>/api</InlineCode> and a static host for the frontend.
       </P>
 
-      <SubHeading>Environment variables</SubHeading>
-      <P>
-        The API server uses the Replit AI Integration proxy — no{" "}
-        <InlineCode>OPENAI_API_KEY</InlineCode> is needed on the server. The CLI and
-        MCP server require their own key.
-      </P>
-      <Code language="bash">{`
+      <DocCard>
+        <SubHeading>Environment variables</SubHeading>
+        <P>
+          The API server uses the Replit AI Integration proxy — no{" "}
+          <InlineCode>OPENAI_API_KEY</InlineCode> is needed on the server. The CLI and
+          MCP server require their own key.
+        </P>
+        <Code language="bash">{`
 # API server (.env or deployment platform secrets)
 SESSION_SECRET=your-random-secret-here
 DATABASE_URL=postgresql://user:pass@host:5432/dbname
@@ -790,18 +815,25 @@ OPENAI_API_KEY=sk-...
 WANDER_ROUTER_MODEL=gpt-4o-mini   # optional
 WANDER_WORKER_MODEL=gpt-4o        # optional
 WANDER_DATA_DIR=/path/to/data     # optional
-      `}</Code>
+        `}</Code>
+      </DocCard>
 
-      <SubHeading>Deploy to Replit (recommended)</SubHeading>
-      <P>
-        The entire monorepo is already configured for Replit deployment. Click{" "}
-        <strong className="text-foreground">Publish</strong> in the Replit header to
-        deploy to a <InlineCode>.replit.app</InlineCode> domain. The proxy and workflow
-        configuration are handled automatically.
-      </P>
+      <DocCard>
+        <SubHeading>Deploy to Replit (recommended)</SubHeading>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+          <P>
+            The entire monorepo is already configured for Replit deployment. Click{" "}
+            <strong className="text-foreground">Publish</strong> in the Replit header to
+            deploy to a <InlineCode>.replit.app</InlineCode> domain. The proxy and
+            workflow configuration are handled automatically.
+          </P>
+        </div>
+      </DocCard>
 
-      <SubHeading>Deploy to Vercel (web UI only)</SubHeading>
-      <Code language="bash">{`
+      <DocCard>
+        <SubHeading>Deploy to Vercel (web UI only)</SubHeading>
+        <Code language="bash">{`
 # 1. Build the frontend
 cd artifacts/wander-ai
 pnpm run build
@@ -816,7 +848,8 @@ git push origin main
 #    Build command:   pnpm --filter @workspace/wander-ai run build
 #    Output dir:      artifacts/wander-ai/dist
 #    Root dir:        (leave blank — monorepo root)
-      `}</Code>
+        `}</Code>
+      </DocCard>
 
       <Callout>
         The web UI makes API calls to <InlineCode>/api</InlineCode>. When deploying the
