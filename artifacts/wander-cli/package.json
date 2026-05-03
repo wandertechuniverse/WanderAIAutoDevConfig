@@ -10,10 +10,17 @@
     "start": "node ./bin/cli.js",
     "dev": "node ./bin/cli.js"
   },
-  "keywords": ["ai", "cli", "agents", "ide", "wanderai"],
+  "keywords": [
+    "ai",
+    "cli",
+    "agents",
+    "ide",
+    "wanderai"
+  ],
   "license": "MIT",
   "dependencies": {
     "@clack/prompts": "^0.9.1",
+    "@google/generative-ai": "^0.24.1",
     "commander": "^12.1.0",
     "dotenv": "^16.4.5",
     "openai": "^4.103.0",

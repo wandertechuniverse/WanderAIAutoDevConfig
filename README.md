@@ -133,13 +133,17 @@ wanderai --version
 Create a `.env` file inside `artifacts/wander-cli/` (and `artifacts/wander-mcp/` for MCP use):
 
 ```bash
-# Required — your LLM provider key
-OPENAI_API_KEY=sk-...
+# ── Provider keys (set at least one) ──────────────────────────────────────────
+OPENAI_API_KEY=sk-...          # Required for OpenAI models (gpt-4o, etc.)
+GEMINI_API_KEY=AIza...         # Required for Gemini models (gemini-1.5-pro, etc.)
 
-# Optional — switch LLM provider
-ACTIVE_PROVIDER=openai          # openai | openrouter | gemini | nvidia
+# ── Provider selection ────────────────────────────────────────────────────────
+# auto (default) — uses OpenAI if OPENAI_API_KEY is set, otherwise Gemini
+# openai         — force OpenAI (OPENAI_API_KEY must be present)
+# gemini         — force Gemini (GEMINI_API_KEY must be present)
+WANDERAI_PROVIDER=auto
 
-# Optional — override individual models
+# ── Optional model overrides ──────────────────────────────────────────────────
 WANDER_ROUTER_MODEL=gpt-4o-mini
 WANDER_WORKER_MODEL=gpt-4o
 WANDER_DATA_DIR=/path/to/data
