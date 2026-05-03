@@ -366,8 +366,10 @@ function SectionCli() {
       <P>
         The <InlineCode>wanderai</InlineCode> CLI is a standalone Node.js tool that
         gives you streaming agent responses directly in your terminal — no browser
-        required. Clone the official repository and link the binary globally with the
-        steps below.
+        required. Install once globally and run <InlineCode>wanderai</InlineCode>{" "}
+        from <strong className="text-foreground">any directory</strong> — the
+        built-in path resolver automatically locates your agent registry regardless
+        of where you invoke it.
       </P>
 
       <DocCard title="Installation" defaultOpen={true}>
@@ -488,20 +490,64 @@ WANDER_WORKER_MODEL=gpt-4o        # default
 WANDER_DATA_DIR=/custom/path/to/data
       `}</Code>
 
+      <DocCard title="Global Key Setup — run wanderai anywhere" dotColor="bg-emerald-400">
+        <P>
+          To use <InlineCode>wanderai</InlineCode> in any terminal session without
+          creating a per-project <InlineCode>.env</InlineCode> file, add your key
+          directly to your shell profile. This works on Linux, WSL, and macOS.
+        </P>
+        <Code language="bash">{`# Set your key globally so wanderai works from any directory
+echo 'export OPENAI_API_KEY="sk-..."' >> ~/.bashrc   # or ~/.zshrc on macOS
+
+# Reload your shell to apply immediately
+source ~/.bashrc`}</Code>
+        <P>
+          Replace <InlineCode>sk-...</InlineCode> with your actual key. After
+          reloading, <InlineCode>wanderai</InlineCode> will pick up the key
+          automatically — no <InlineCode>.env</InlineCode> file required.
+        </P>
+      </DocCard>
+
       {/* Troubleshooting */}
-      <div className="mt-6 rounded-xl border border-slate-700/60 bg-slate-900/40 backdrop-blur-sm p-4 flex items-start gap-3">
-        <div className="shrink-0 w-5 h-5 rounded-full bg-slate-700 flex items-center justify-center mt-0.5">
-          <span className="text-[9px] font-bold text-slate-300">?</span>
+      <div className="mt-6 rounded-xl border border-slate-700/60 bg-slate-900/40 backdrop-blur-sm overflow-hidden">
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-slate-700/40 bg-slate-800/40">
+          <div className="w-4 h-4 rounded-full bg-slate-700 flex items-center justify-center shrink-0">
+            <span className="text-[9px] font-bold text-slate-300">?</span>
+          </div>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Troubleshooting</span>
         </div>
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          <strong className="text-foreground">Troubleshooting:</strong> If the{" "}
-          <InlineCode>wanderai</InlineCode> command is not recognised after linking,
-          ensure your npm global bin directory is in your system's{" "}
-          <InlineCode>PATH</InlineCode>. Run{" "}
-          <InlineCode>npm bin -g</InlineCode> to find the directory, then add it to
-          your shell profile (<InlineCode>~/.bashrc</InlineCode>,{" "}
-          <InlineCode>~/.zshrc</InlineCode>, etc.).
-        </p>
+        <ul className="px-4 py-3 space-y-3">
+          <li className="flex items-start gap-2.5 text-xs text-muted-foreground leading-relaxed">
+            <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0" />
+            <span>
+              <strong className="text-foreground">Command not found after install —</strong>{" "}
+              ensure your npm global bin directory is in your system's{" "}
+              <InlineCode>PATH</InlineCode>. Run <InlineCode>npm bin -g</InlineCode> to
+              find the directory, then add it to your shell profile{" "}
+              (<InlineCode>~/.bashrc</InlineCode> or <InlineCode>~/.zshrc</InlineCode>).
+            </span>
+          </li>
+          <li className="flex items-start gap-2.5 text-xs text-muted-foreground leading-relaxed">
+            <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0" />
+            <span>
+              <strong className="text-foreground">agents_config.json not found —</strong>{" "}
+              the path resolver checks four locations automatically. If it still fails,
+              re-run <InlineCode>npm install -g .</InlineCode> from inside{" "}
+              <InlineCode>artifacts/wander-cli/</InlineCode> to refresh the global
+              binary, then invoke <InlineCode>wanderai</InlineCode> from the monorepo
+              root as a fallback.
+            </span>
+          </li>
+          <li className="flex items-start gap-2.5 text-xs text-muted-foreground leading-relaxed">
+            <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0" />
+            <span>
+              <strong className="text-foreground">ERR_PNPM_NO_GLOBAL_BIN_DIR —</strong>{" "}
+              run <InlineCode>pnpm setup</InlineCode>, then restart your terminal or
+              run <InlineCode>source ~/.bashrc</InlineCode> to initialise the global
+              binary path.
+            </span>
+          </li>
+        </ul>
       </div>
     </div>
   );
