@@ -1,0 +1,49 @@
+# Enterprise Rebuild: Wander AI CLI & MCP Server
+
+**Goal:**
+We are rebuilding the Wander AI Auto Dev Config CLI and MCP Server from the ground up to be enterprise-grade and production-ready. 
+
+**Architecture Rules:**
+1. **Separation of Concerns:** The CLI UI (`bin/cli.js`) must be completely decoupled from the core MCP and Routing logic. 
+2. **Schema Validation First:** Implement `zod` to validate all environment variables, API keys, and the `agents_config.json` file. If validation fails, provide a human-readable terminal error and exit cleanly (no ugly stack traces).
+3. **Robust CLI UI:** Use `commander` for command-line argument parsing and `ora` for terminal loading spinners.
+4. **Resilient Routing:** The core API client must include a retry mechanism and provider fallback (e.g., wrap the API calls in a try/catch that falls back to Gemini/OpenRouter on a 429 status).
+
+**Step 1 Execution:**
+Please initialize the new CLI structure. 
+- Create `src/cli/index.js` (using Commander).
+- Create `src/config/validator.js` (using Zod for config validation).
+- Create `src/mcp/server.js` (a clean, stateless class for the MCP server).
+- Update `package.json` with the required enterprise dependencies (`zod`, `commander`, `ora`, `chalk`).
+
+Do not write the Python Synthesizer yet; we are strictly laying the Node.js CLI and MCP foundation first.
+
+
+# Refactor Task: Initialize Enterprise Package & Logger
+
+**Context:**
+We are refactoring the Wander AI Auto Dev Config tool into a production-grade application using ESM (ECMAScript Modules). The directory structure is already created.
+
+**Execution Steps:**
+
+1. **`package.json`:** Generate a production-ready `package.json` file.
+   - Set `"type": "module"`.
+   - Set the `"bin"` field to point `wanderai` to `./bin/wanderai.js`.
+   - Add the following dependencies: `commander`, `zod`, `ora`, `chalk`, `dotenv`.
+   - Add standard scripts (`start`, `dev`).
+
+2. **`src/utils/logger.js`:** Create a centralized logging utility.
+   - Import `chalk`.
+   - Export an object with methods for `info`, `success`, `warn`, and `error` (e.g., `error` should log in red with an "[ERROR]" prefix).
+   - This ensures we never use standard `console.log` and all terminal output looks professional.
+
+3. **`bin/wanderai.js`:** Create the CLI entry point.
+   - Add the shebang `#!/usr/bin/env node` at the very top.
+   - Import the logger and simply output a startup success message using the new logger.
+
+Please output the code for these three files.
+
+
+
+
+can we incorporate both?
