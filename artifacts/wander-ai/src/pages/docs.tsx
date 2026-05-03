@@ -104,12 +104,12 @@ function SubHeading({ children }: { children: React.ReactNode }) {
 }
 
 function P({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-muted-foreground leading-relaxed mb-3">{children}</p>;
+  return <p className="text-sm text-muted-foreground leading-relaxed mb-3 break-words overflow-wrap-anywhere">{children}</p>;
 }
 
 function InlineCode({ children }: { children: React.ReactNode }) {
   return (
-    <code className="bg-white/10 text-cyan-300 px-1.5 py-0.5 rounded text-[13px] font-mono">
+    <code className="bg-white/10 text-cyan-300 px-1.5 py-0.5 rounded text-[13px] font-mono break-all">
       {children}
     </code>
   );
@@ -1113,7 +1113,7 @@ export function DocsPage() {
         </Link>
       </header>
 
-      <div className="flex flex-1 min-h-0 relative">
+      <div className="flex flex-1 min-h-0 min-w-0 overflow-x-hidden relative">
         {/* Mobile overlay */}
         {sidebarOpen && (
           <div
@@ -1132,8 +1132,8 @@ export function DocsPage() {
         />
 
         {/* Content */}
-        <ScrollArea className="flex-1 min-h-0">
-          <main className="max-w-3xl mx-auto px-4 md:px-8 py-8 pb-20">
+        <ScrollArea className="flex-1 min-h-0 min-w-0 overflow-x-hidden">
+          <main className="w-full min-w-0 max-w-3xl mx-auto px-4 md:px-8 py-8 pb-20">
             {/* Desktop page header */}
             <div className="hidden md:flex items-center justify-between mb-2 pb-6 border-b border-slate-800">
               <div className="flex items-center gap-3">
