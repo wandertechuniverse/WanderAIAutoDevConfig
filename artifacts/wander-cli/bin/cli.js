@@ -13,9 +13,14 @@ import {
 } from '@clack/prompts';
 import pc from 'picocolors';
 import { readFileSync, existsSync } from 'fs';
-import { join, resolve } from 'path';
+import { join, resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { Command } from 'commander';
 import OpenAI from 'openai';
+
+// ─── ESM __dirname shim ───────────────────────────────────────────────────────
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // ─── CLI flags ────────────────────────────────────────────────────────────────
 
@@ -56,23 +61,40 @@ function printBanner() {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function loadAgents() {
-  const configPath = join(DATA_DIR, 'agents_config.json');
-  if (!existsSync(configPath)) {
-    note(
-      pc.dim('Expected: ') + configPath + '\n' +
-      pc.dim('Run from your project root, or pass ') + pc.cyan('--data <path>'),
-      pc.yellow('agents_config.json not found'),
-    );
-    cancel('Cannot continue without agent configuration.');
-    process.exit(1);
+// 🛡️ Bulletproof Path Resolver
+function resolveConfigPath() {
+  const possiblePaths = [
+    // 1. Running from wander-cli/bin (development — this file lives in bin/)
+    resolve(__dirname, '../../api-server/data/agents_config.json'),
+    // 2. Running from wander-cli/dist (compiled npm package)
+    resolve(__dirname, '../../../api-server/data/agents_config.json'),
+    // 3. User runs it from the monorepo root
+    resolve(process.cwd(), 'artifacts/api-server/data/agents_config.json'),
+    // 4. Fallback: --data flag value or adjacent data folder
+    join(DATA_DIR, 'agents_config.json'),
+  ];
+
+  for (const configPath of possiblePaths) {
+    if (existsSync(configPath)) return configPath;
   }
+
+  console.error('\n❌ WANDER AI CLI ERROR: Cannot find agents_config.json.');
+  console.error('Ensure you are running from the project root or the monorepo is intact.\n');
+  process.exit(1);
+}
+
+function loadAgents() {
+  const configPath = resolveConfigPath();
   const rawConfig = JSON.parse(readFileSync(configPath, 'utf8'));
   return Array.isArray(rawConfig) ? rawConfig : rawConfig.agents;
 }
 
 function loadSystemPrompt(agentId) {
-  const personaPath = join(DATA_DIR, 'agents', `${agentId}.agent.md`);
+  // Derive the data directory from the same resolved config path so persona
+  // files are always found alongside the config, regardless of cwd.
+  const configPath = resolveConfigPath();
+  const dataDir = dirname(configPath);
+  const personaPath = join(dataDir, 'agents', `${agentId}.agent.md`);
   if (existsSync(personaPath)) {
     return readFileSync(personaPath, 'utf8');
   }
