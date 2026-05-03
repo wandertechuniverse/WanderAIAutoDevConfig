@@ -551,6 +551,26 @@ source ~/.bashrc`}</Code>
           </li>
         </ul>
       </div>
+
+      <SubHeading>Advanced: Custom Agent Registries</SubHeading>
+      <P>
+        By default, the <InlineCode>wanderai</InlineCode> CLI automatically locates
+        its internal agent registry. However, if you want to build a completely
+        custom directory of <InlineCode>.agent.md</InlineCode> personas for a
+        specific project or team, you can override the default registry using the{" "}
+        <InlineCode>--data</InlineCode> flag:
+      </P>
+      <Code language="bash">{`# Point the CLI to your own custom directory
+wanderai --data /path/to/your/custom/data/folder`}</Code>
+      <P>
+        The target folder must contain an <InlineCode>agents_config.json</InlineCode>{" "}
+        file (a JSON array of agent objects with <InlineCode>id</InlineCode>,{" "}
+        <InlineCode>name</InlineCode>, <InlineCode>role</InlineCode>, and{" "}
+        <InlineCode>agent_type</InlineCode> fields) alongside an{" "}
+        <InlineCode>agents/</InlineCode> subdirectory holding the corresponding{" "}
+        <InlineCode>{"<id>"}.agent.md</InlineCode> persona files. The router and all
+        streaming logic will use your custom registry instead of the built-in one.
+      </P>
     </div>
   );
 }
