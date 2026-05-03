@@ -14,15 +14,16 @@ router.get("/config", (req, res) => {
       "microservice. Routes developer tasks to 17 specialist AI agents (Frontend Dev, Backend Dev, " +
       "Security Engineer, etc.) using a router model + worker model pipeline. " +
       "The Python synthesizer merges multi-agent outputs into a single production-ready artifact.",
-    ai_rules:
-      "1. Never use console.log in server code — use req.log in route handlers and the singleton logger elsewhere. " +
-      "2. All new API routes go in artifacts/api-server/src/routes/ as individual files and must be registered in routes/index.ts. " +
-      "3. The agents_config.json schema is Zod-validated: every entry requires id (snake_case), name, role, and agent_type (leader|worker|subagent). " +
-      "4. The Python synthesizer at localhost:8000 must always return 200 — degrade to local-fallback-v1, never throw. " +
-      "5. MCP server stdout is the protocol wire — all logging must go to stderr only. " +
-      "6. CLI src/ modules (logger, validator, agents, providers) are the source of truth; bin/cli.js is UI-only. " +
-      "7. Use pnpm --filter <package> for targeted installs; never run pnpm dev at the workspace root. " +
-      "8. Provider priority: OPENROUTER_API_KEY → OPENAI_API_KEY → GEMINI_API_KEY.",
+    ai_rules: [
+      "No console.log in server code — use req.log in route handlers and the singleton logger elsewhere.",
+      "Follow existing route file naming conventions — one file per route group in src/routes/, registered in index.ts.",
+      "Use Zod for all schema requirements — validate every request body and config file at the boundary.",
+      "Adhere to the synthesizer degradation contract — POST /synthesize must always return 200, never throw.",
+      "Respect MCP stdout constraints — all logging in the MCP server must go to stderr only; stdout is the protocol wire.",
+      "Maintain strict CLI layer separation — bin/cli.js is UI-only; all business logic lives in src/ modules.",
+      "Always use pnpm — use pnpm --filter <package> for targeted installs; never run pnpm dev at the workspace root.",
+      "Respect the defined provider priority order — OPENROUTER_API_KEY → OPENAI_API_KEY → GEMINI_API_KEY.",
+    ],
     last_updated: new Date().toISOString(),
   });
 });

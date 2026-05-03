@@ -1,0 +1,79 @@
+"I need to implement a new GET route at /config within my Express API server. My router is mounted at /api in the main app, so the final endpoint should be /api/config.
+
+Please create/update the file artifacts/api-server/src/routes/config.ts with the following implementation:
+
+Imports: Use standard Express imports.
+
+Data Structure: Return a JSON object with:
+
+default_build_command: 'pnpm run build'
+
+project_context: 'Full-stack monorepo featuring a web hub, Express API, MCP server, CLI, Python synthesizer, and a 17-agent routing pipeline.'
+
+ai_rules: An array containing the 8 architectural rules:
+
+No console.log in server code.
+
+Follow existing route file naming conventions.
+
+Use Zod for all schema requirements.
+
+Adhere to the synthesizer degradation contract.
+
+Respect MCP stdout constraints.
+
+Maintain strict CLI layer separation.
+
+Always use pnpm.
+
+Respect the defined provider priority order.
+
+last_updated: A fresh new Date().toISOString() timestamp.
+
+Wiring: Ensure this router is exported and then imported into your main API router (usually index.ts or routes.ts) so it responds to GET requests correctly.
+
+The endpoint must be public and return valid JSON."
+
+🚨 Troubleshooting: Fix the 404/Connection Error
+
+Your recent terminal logs show Cannot GET /api/config (404) on the live app and a connection failure on localhost. Paste this prompt to fix the wiring:
+
+"The endpoint is currently returning a 404 'Cannot GET /api/config' error. This means the route is not correctly mounted in the Express app.
+
+Please:
+
+Check artifacts/api-server/src/index.ts (or your main server entry point). Verify where app.use('/api', ...) is defined.
+
+Locate the router file that handles the /api prefix (likely artifacts/api-server/src/routes/index.ts).
+
+Ensure you have:
+import configRouter from './config';
+router.use('/', configRouter);
+
+For the localhost connection error: Ensure the server is actually running on port 80 or 8080 inside the container, and that pnpm is successfully compiling the TypeScript files."
+
+Direct Express Implementation (Reference)
+
+import { Router, Request, Response } from 'express';
+
+const router = Router();
+
+router.get('/config', (req: Request, res: Response) => {
+  res.json({
+    default_build_command: "pnpm run build",
+    project_context: "Full-stack monorepo featuring a web hub, Express API, MCP server, CLI, Python synthesizer, and a 17-agent routing pipeline.",
+    ai_rules: [
+      "No console.log in server code.",
+      "Follow existing route file naming conventions.",
+      "Use Zod for all schema requirements.",
+      "Adhere to the synthesizer degradation contract.",
+      "Respect MCP stdout constraints.",
+      "Maintain strict CLI layer separation.",
+      "Always use pnpm.",
+      "Respect the defined provider priority order."
+    ],
+    last_updated: new Date().toISOString()
+  });
+});
+
+export default router;
