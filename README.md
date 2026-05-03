@@ -226,6 +226,16 @@ WanderAIAutoDevConfig/
 
 ---
 
+## ⚠️ Troubleshooting & Error Handling
+
+If you encounter issues during your first run on **Ubuntu** or other Linux environments, check these common fixes:
+
+*   **"API Key Not Set":** Ensure your `.env` file is in the root directory and formatted as `OPENAI_API_KEY=sk-...` without spaces or quotes.
+*   **`ERR_PNPM_NO_GLOBAL_BIN_DIR`:** Run `pnpm setup` and restart your terminal (or run `source ~/.bashrc`) to initialize the global binary path.
+*   **Command Not Found:** If `wanderai` isn't recognized after `npm link`, ensure your global `node_modules` bin folder is in your system `$PATH`.
+
+---
+
 ## 🤖 Agent Roster
 
 The registry ships with 17 specialist agents across three tiers:
