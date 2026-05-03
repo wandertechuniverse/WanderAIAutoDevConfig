@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { IDE_OPTIONS, type IdeId } from "@/hooks/use-ide-selection";
 import {
   Sparkles,
@@ -60,9 +59,12 @@ function CopyButton({ text }: { text: string }) {
 // on the inner div handles the actual scrollbar without breaking the page layout.
 function Code({ children }: { language: string; children: string }) {
   return (
-    <div className="relative group mt-3 mb-2 w-full max-w-[100vw] sm:max-w-full overflow-hidden rounded-xl bg-slate-950/80 border border-slate-800/60">
+    // max-w-full (not max-w-[100vw]) so the cap is relative to the parent
+    // container width, not the raw viewport — prevents the block itself from
+    // being the source of horizontal overflow.
+    <div className="relative group mt-3 mb-2 w-full max-w-full overflow-hidden rounded-xl bg-slate-950/80 border border-slate-800/60">
       <CopyButton text={children.trim()} />
-      <div className="w-full overflow-x-auto p-3 md:p-4">
+      <div className="overflow-x-auto p-3 md:p-4">
         <pre className="text-[10px] md:text-sm text-slate-300 whitespace-pre w-max min-w-full font-mono leading-relaxed">
           <code>{children.trim()}</code>
         </pre>
@@ -1131,8 +1133,9 @@ export function DocsPage() {
           isOpen={sidebarOpen}
         />
 
-        {/* Content */}
-        <ScrollArea className="flex-1 min-h-0 min-w-0 overflow-x-hidden">
+        {/* Content — plain div so we own overflow-x directly (Radix ScrollArea
+            internal viewport ignores overflow-x-hidden placed on its root wrapper) */}
+        <div className="flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden">
           <main className="w-full min-w-0 max-w-3xl mx-auto px-4 md:px-8 py-8 pb-20">
             {/* Desktop page header */}
             <div className="hidden md:flex items-center justify-between mb-2 pb-6 border-b border-slate-800">
@@ -1208,7 +1211,7 @@ export function DocsPage() {
               })()}
             </div>
           </main>
-        </ScrollArea>
+        </div>
       </div>
     </div>
   );
