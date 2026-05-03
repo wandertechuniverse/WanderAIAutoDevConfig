@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "r28yH_NhgqTkH1AfK5ffw"
+uri = "file://README.md"
+type = "text"
+title = "Wander AI — Production README.md"
