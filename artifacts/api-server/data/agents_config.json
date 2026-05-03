@@ -74,8 +74,8 @@
   {
     "id": "technical_writer",
     "name": "Technical Writer",
-    "role": "Writes documentation, READMEs, and developer guides",
-    "agent_type": "worker"
+    "role": "Markdown documentation, API references, READMEs, inline code comments, and Mermaid.js architecture diagrams.",
+    "agent_type": "subagent"
   },
   {
     "id": "code_reviewer",

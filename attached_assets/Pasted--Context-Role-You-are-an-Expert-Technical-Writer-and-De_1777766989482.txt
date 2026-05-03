@@ -1,0 +1,28 @@
+# Context & Role
+You are an Expert Technical Writer and Developer Advocate. I need you to write the `README.md` for my project, **Wander AI Auto Dev Config**, which is being submitted to a major developer buildathon.
+
+# Project Overview
+Wander AI is a locally orchestrated, multi-agent AI ecosystem designed for IDE-first workflows. It solves the friction of context-switching during "vibe coding" by bringing an entire agency of 16 specialized AI developers (e.g., Database Architect, DevOps Engineer, Frontend Developer) directly into the user's terminal and IDE.
+
+# The Architecture (Monorepo)
+The ecosystem ships as three complementary tools that share a single underlying agent registry:
+1. **Web Chat UI:** A responsive, browser-based React interface with a sleek dark mode and interactive documentation hub.
+2. **Node.js CLI (`wanderai`):** A terminal-first tool for executing tasks globally.
+3. **MCP Server (`wanderai-mcp`):** A native Model Context Protocol integration that allows IDEs like Cursor, Windsurf, and Claude Desktop to delegate tasks directly to our specialized agents.
+
+**Core Tech:** Node.js, Next.js/React, Tailwind CSS, `@modelcontextprotocol/sdk`.
+**LLM Gateway:** Multi-provider API routing natively supporting OpenAI, OpenRouter, Google Gemini, and NVIDIA NIMs.
+
+# Required README Structure
+Please generate a comprehensive, highly polished `README.md` file using the following structure:
+
+1. **Header:** Project title, a catchy one-liner describing the "Agency in a Box" concept, and relevant tech stack badges.
+2. **The Problem & The Solution (The Story):** Briefly explain how traditional AI coding requires too much context switching, and how Wander AI solves this by injecting specialized personas (via `.agent.md` files) directly into the developer's environment.
+3. **Features Matrix:** Highlight the Web UI, CLI, MCP Server, and Multi-Provider LLM Gateway.
+4. **Repository Structure:** Provide an ASCII folder tree showing `artifacts/api-server`, `artifacts/wander-ai` (Web UI), `artifacts/wander-cli`, and `artifacts/wander-mcp`.
+5. **Quick Start (CLI):** Show the exact terminal commands to clone the repo (`https://github.com/wandertechuniverse/WanderAIAutoDevConfig.git`), navigate to the CLI directory, and run `npm install -g .`.
+6. **MCP Integration:** Briefly explain that the MCP server compiles to `dist/index.js` and connects via `stdio`.
+7. **Environment Configuration:** Show a sample `.env` setup requiring an `OPENAI_API_KEY` and the `ACTIVE_PROVIDER` toggle.
+
+# Tone & Style
+The tone should be premium, authoritative, and community-focused. Use appropriate emojis for section headers to make it highly scannable. Ensure all terminal commands are in proper bash code blocks.
