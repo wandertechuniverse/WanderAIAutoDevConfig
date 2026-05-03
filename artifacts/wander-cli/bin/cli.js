@@ -67,7 +67,8 @@ function loadAgents() {
     cancel('Cannot continue without agent configuration.');
     process.exit(1);
   }
-  return JSON.parse(readFileSync(configPath, 'utf8'));
+  const rawConfig = JSON.parse(readFileSync(configPath, 'utf8'));
+  return Array.isArray(rawConfig) ? rawConfig : rawConfig.agents;
 }
 
 function loadSystemPrompt(agentId) {
@@ -79,15 +80,16 @@ function loadSystemPrompt(agentId) {
 }
 
 function buildSelectOptions(agents) {
-  const leaders = agents.filter(a => a.agent_type === 'leader');
-  const workers = agents.filter(a => a.agent_type === 'worker');
+  const leaders   = agents.filter(a => a.agent_type === 'leader');
+  const workers   = agents.filter(a => a.agent_type === 'worker');
+  const subagents = agents.filter(a => a.agent_type === 'subagent');
 
   return [
     // Leaders group
     ...leaders.map((a, i) => ({
       value: a.id,
       label:
-        (i === 0 ? pc.dim('Leaders  ') : '         ') +
+        (i === 0 ? pc.dim('Leaders   ') : '          ') +
         pc.cyan(a.name),
       hint: a.role,
     })),
@@ -95,8 +97,16 @@ function buildSelectOptions(agents) {
     ...workers.map((a, i) => ({
       value: a.id,
       label:
-        (i === 0 ? pc.dim('Workers  ') : '         ') +
+        (i === 0 ? pc.dim('Workers   ') : '          ') +
         pc.white(a.name),
+      hint: a.role,
+    })),
+    // Subagents group
+    ...subagents.map((a, i) => ({
+      value: a.id,
+      label:
+        (i === 0 ? pc.dim('Subagents ') : '          ') +
+        pc.magenta(a.name),
       hint: a.role,
     })),
   ];

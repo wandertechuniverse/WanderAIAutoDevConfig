@@ -316,6 +316,6 @@ MIT © [WanderTech Universe](https://github.com/wandertechuniverse)
 
 **Built with intention. Deployed with precision. Shared with the community.**
 
-*WanderTech Universe · DevKreate Labs · FlutterFlow Student Ambassadors Ghana*
+*WanderTech Universe*
 
 </div>
