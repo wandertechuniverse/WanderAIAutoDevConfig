@@ -24,8 +24,8 @@ import {
 const SECTIONS = [
   { id: "overview",     label: "Overview",         icon: BookOpen },
   { id: "agents",       label: "The 16 Agents",    icon: Bot },
-  { id: "cli",          label: "CLI Tool",          icon: Terminal },
   { id: "mcp",          label: "MCP Integration",   icon: Plug },
+  { id: "cli",          label: "CLI Tool",          icon: Terminal },
   { id: "repo-context", label: "Repo Context",      icon: Brain },
   { id: "deployment",   label: "Deployment",        icon: Rocket },
 ] as const;
@@ -184,46 +184,63 @@ function SectionOverview() {
       </SectionHeading>
 
       <P>
-        <strong className="text-foreground">WanderAI Auto Dev Config</strong> is an
-        orchestrated multi-agent AI ecosystem built for IDE-first development workflows.
-        It routes any engineering task — from architecture reviews to Flutter screens — to
-        the most qualified specialist agent automatically.
+        <strong className="text-foreground">WanderAI Auto Dev Config</strong> plugs a
+        registry of 17 specialist AI agents directly into your editor via the{" "}
+        <strong className="text-foreground">Model Context Protocol (MCP)</strong> —
+        eliminating context-switching without ever leaving your workspace. Select an
+        agent, describe your task, and get a streaming expert response inside Cursor,
+        Claude Desktop, or any MCP-compatible host.
       </P>
 
       <P>
-        The ecosystem ships as three complementary tools that all share the same agent
-        personas and configuration:
+        The ecosystem ships as three complementary interfaces that share the same agent
+        personas and configuration. MCP integration is the recommended, production-ready
+        entry point:
       </P>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6">
-        {[
-          {
-            icon: MessageSquare,
-            title: "Web Chat UI",
-            desc: "Browser-based interface for direct conversation with any of the 16 agents.",
-          },
-          {
-            icon: Terminal,
-            title: "CLI Tool",
-            desc: "wanderai — a Node.js CLI for terminal-first workflows with streaming output.",
-          },
-          {
-            icon: Plug,
-            title: "MCP Server",
-            desc: "wanderai-mcp — a native IDE integration for Cursor, Claude Desktop, and any MCP-compatible host.",
-          },
-        ].map(({ icon: Icon, title, desc }) => (
-          <div
-            key={title}
-            className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 backdrop-blur-sm"
-          >
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-3">
-              <Icon size={16} />
-            </div>
-            <div className="text-sm font-semibold text-foreground mb-1">{title}</div>
-            <div className="text-xs text-muted-foreground leading-relaxed">{desc}</div>
+        {/* MCP — flagship, listed first */}
+        <div className="relative bg-slate-900/60 border border-cyan-500/30 rounded-xl p-4 backdrop-blur-sm ring-1 ring-cyan-500/10">
+          <div className="absolute top-3 right-3">
+            <span className="text-[9px] font-bold font-mono uppercase tracking-widest px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+              Recommended
+            </span>
           </div>
-        ))}
+          <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-3">
+            <Plug size={16} />
+          </div>
+          <div className="text-sm font-semibold text-foreground mb-1">MCP Server</div>
+          <div className="text-xs text-muted-foreground leading-relaxed">
+            Native IDE integration for Cursor, Claude Desktop, and any MCP-compatible host. Production-ready.
+          </div>
+        </div>
+
+        {/* Web Chat UI */}
+        <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 backdrop-blur-sm">
+          <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-3">
+            <MessageSquare size={16} />
+          </div>
+          <div className="text-sm font-semibold text-foreground mb-1">Web Chat UI</div>
+          <div className="text-xs text-muted-foreground leading-relaxed">
+            Browser-based interface for direct conversation with any of the 17 agents.
+          </div>
+        </div>
+
+        {/* CLI — Beta */}
+        <div className="relative bg-slate-900/60 border border-slate-800 rounded-xl p-4 backdrop-blur-sm">
+          <div className="absolute top-3 right-3">
+            <span className="text-[9px] font-bold font-mono uppercase tracking-widest px-1.5 py-0.5 rounded bg-slate-700/60 border border-slate-600/40 text-slate-400">
+              Beta
+            </span>
+          </div>
+          <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-3">
+            <Terminal size={16} />
+          </div>
+          <div className="text-sm font-semibold text-foreground mb-1">CLI Tool</div>
+          <div className="text-xs text-muted-foreground leading-relaxed">
+            <InlineCode>wanderai</InlineCode> — standalone Node.js CLI for terminal-first streaming workflows.
+          </div>
+        </div>
       </div>
 
       <SubHeading>How routing works</SubHeading>
@@ -363,7 +380,30 @@ function SectionCli() {
     <div>
       <SectionHeading id="cli">
         <Terminal size={20} className="text-cyan-400" /> CLI Tool
+        <span className="ml-2 text-[10px] font-bold font-mono uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-700/50 border border-slate-600/40 text-slate-400 align-middle">
+          Beta
+        </span>
       </SectionHeading>
+
+      {/* Beta disclaimer */}
+      <div className="flex items-start gap-3 rounded-xl border border-slate-700/50 bg-slate-800/30 backdrop-blur-sm px-4 py-3 mb-5">
+        <div className="shrink-0 w-1 self-stretch rounded-full bg-slate-600/60 mt-0.5" />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          <strong className="text-slate-300">Note:</strong> Our standalone terminal CLI
+          is currently in beta. For the most stable, out-of-the-box experience we
+          recommend using the{" "}
+          <button
+            className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2 transition-colors cursor-pointer bg-transparent border-0 p-0 font-inherit text-xs"
+            onClick={() => {
+              const el = document.getElementById("mcp");
+              el?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            MCP integration
+          </button>{" "}
+          instead.
+        </p>
+      </div>
 
       <P>
         The <InlineCode>wanderai</InlineCode> CLI is a standalone Node.js tool that
@@ -665,12 +705,18 @@ function SectionMcp() {
       <div id="ide-integration" />
       <SectionHeading id="mcp">
         <Plug size={20} className="text-cyan-400" /> MCP Integration
+        <span className="ml-2 text-[10px] font-bold font-mono uppercase tracking-widest px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 align-middle">
+          Production Ready
+        </span>
       </SectionHeading>
 
       <P>
-        The WanderAI MCP server exposes three tools that any MCP-compatible IDE can call.
-        The server communicates over <strong>stdio</strong> — the IDE spawns it as a child
-        process. Select your IDE below to see the exact setup instructions.
+        MCP integration is the <strong className="text-foreground">recommended way to use WanderAI</strong>.
+        It plugs your full 17-agent registry directly into Cursor, Claude Desktop, Windsurf, or any
+        MCP-compatible host — giving you expert AI assistance without leaving your editor.
+        The server communicates over <strong className="text-foreground">stdio</strong>{" "}
+        (the IDE spawns it as a child process) and exposes three callable tools: list agents,
+        select an agent, and chat with streaming output.
       </P>
 
       {/* IDE switcher */}
@@ -1183,8 +1229,8 @@ export function DocsPage() {
 
             {activeSection === "overview"   && <SectionOverview />}
             {activeSection === "agents"     && <SectionAgents />}
-            {activeSection === "cli"        && <SectionCli />}
             {activeSection === "mcp"          && <SectionMcp />}
+            {activeSection === "cli"          && <SectionCli />}
             {activeSection === "repo-context" && <SectionRepoContext />}
             {activeSection === "deployment"   && <SectionDeployment />}
 
