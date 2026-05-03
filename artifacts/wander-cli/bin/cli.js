@@ -120,18 +120,17 @@ async function streamResponse(openai, messages) {
   console.log('');
 
   if (STREAM) {
-    const stream = openai.chat.completions.stream({
+    const stream = await openai.chat.completions.create({
       model: MODEL,
       messages,
       max_tokens: 8192,
+      stream: true,
     });
 
     for await (const chunk of stream) {
       const delta = chunk.choices[0]?.delta?.content;
       if (delta) process.stdout.write(pc.white(delta));
     }
-
-    await stream.finalChatCompletion();
   } else {
     const completion = await openai.chat.completions.create({
       model: MODEL,
@@ -207,10 +206,11 @@ async function main() {
 
     try {
       if (STREAM) {
-        const stream = openai.chat.completions.stream({
+        const stream = await openai.chat.completions.create({
           model: MODEL,
           messages,
           max_tokens: 8192,
+          stream: true,
         });
 
         s.stop(pc.cyan(agent.name) + pc.dim(':'));
@@ -228,7 +228,6 @@ async function main() {
         }
 
         console.log('\n' + divider + '\n');
-        await stream.finalChatCompletion();
       } else {
         const completion = await openai.chat.completions.create({
           model: MODEL,
