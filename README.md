@@ -147,6 +147,19 @@ WANDER_DATA_DIR=/path/to/data
 
 > **Pro-Tip:** The Web Chat Hub uses Replit's internal AI Integration proxy — no `OPENAI_API_KEY` is needed when running inside Replit. Only the CLI and MCP server, which run locally outside of Replit, require a direct key.
 
+#### 🌍 The Global Key Setup (Optional but Recommended)
+If you want the `wanderai` CLI to run seamlessly in *any* directory on your machine without creating a `.env` file for every single project, add your provider key directly to your system's shell profile.
+```bash
+# 1. Open your bash or zsh profile
+nano ~/.bashrc  # Use ~/.zshrc if on macOS/Zsh
+
+# 2. Add this line at the very bottom:
+export OPENAI_API_KEY="sk-..."
+
+# 3. Save, exit, and reload your shell:
+source ~/.bashrc
+```
+
 ### 4. Run the Web Hub (Replit)
 
 The monorepo is pre-configured for Replit. All three services start automatically via the configured workflows. Click **Run** to start, or **Publish** to deploy to a `.replit.app` domain.
@@ -291,7 +304,6 @@ Wander AI is built on a **local-first, zero-trust** philosophy:
 | 🔄 | Agent memory — persistent context across sessions |
 | 🔄 | Multi-agent task chains — Tech Lead delegates to sub-specialists |
 | 🔄 | Local model support — Ollama / LM Studio integration |
-| 🔄 | DevKreate Labs onboarding templates |
 
 ---
 
