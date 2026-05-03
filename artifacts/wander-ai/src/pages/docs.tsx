@@ -13,6 +13,7 @@ import {
   Bot,
   Brain,
   ChevronRight,
+  ChevronDown,
   MessageSquare,
   Copy,
   Check,
@@ -62,7 +63,7 @@ function Code({ children }: { language: string; children: string }) {
     <div className="relative group mt-3 mb-2 w-full max-w-[100vw] sm:max-w-full overflow-hidden rounded-xl bg-slate-950/80 border border-slate-800/60">
       <CopyButton text={children.trim()} />
       <div className="w-full overflow-x-auto p-3 md:p-4">
-        <pre className="text-[10px] md:text-xs text-slate-300 whitespace-pre w-max min-w-full font-mono leading-relaxed">
+        <pre className="text-[10px] md:text-sm text-slate-300 whitespace-pre w-max min-w-full font-mono leading-relaxed">
           <code>{children.trim()}</code>
         </pre>
       </div>
@@ -76,7 +77,7 @@ function CodeWrap({ children }: { language: string; children: string }) {
   return (
     <div className="relative group mt-3 mb-2 w-full max-w-full rounded-xl bg-slate-950/80 border border-slate-800/60 p-3 md:p-4">
       <CopyButton text={children.trim()} />
-      <pre className="text-[10px] md:text-xs text-slate-300 whitespace-pre-wrap break-all md:break-words font-mono leading-relaxed pr-8">
+      <pre className="text-[10px] md:text-sm text-slate-300 whitespace-pre-wrap break-all md:break-words font-mono leading-relaxed pr-8">
         <code>{children.trim()}</code>
       </pre>
     </div>
@@ -122,18 +123,51 @@ function Callout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function DocCard({ children, className }: { children: React.ReactNode; className?: string }) {
+function DocCard({
+  title,
+  badge,
+  dotColor = "bg-cyan-400",
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  badge?: string;
+  dotColor?: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   return (
-    <div
-      className={[
-        "bg-slate-900/40 border border-slate-800/60 rounded-xl p-4 md:p-5 my-5 overflow-hidden",
-        "[&>h3:first-child]:mt-0",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
-    >
-      {children}
+    <div className="w-full max-w-full rounded-xl border border-slate-800/60 bg-slate-900/40 mb-4 overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex w-full items-center justify-between p-4 focus:outline-none hover:bg-slate-800/40 transition-colors"
+      >
+        <div className="flex items-center text-left min-w-0 gap-3">
+          <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`} />
+          <h3 className="font-semibold text-slate-200 text-sm truncate">{title}</h3>
+          {badge && (
+            <span className="font-mono text-[10px] text-slate-500 hidden sm:inline-block shrink-0">
+              {badge}
+            </span>
+          )}
+        </div>
+        <ChevronDown
+          size={16}
+          className={`text-slate-500 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+      <div
+        className={`transition-all duration-300 ease-in-out overflow-hidden ${
+          isOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-4 pb-4 border-t border-slate-800/30 min-w-0 w-full">
+          <div className="w-full overflow-x-auto pb-1">
+            {children}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -336,11 +370,7 @@ function SectionCli() {
         steps below.
       </P>
 
-      <DocCard>
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
-          <span className="text-[10px] font-bold text-cyan-400/70 uppercase tracking-widest font-mono">Installation</span>
-        </div>
+      <DocCard title="Installation" defaultOpen={true}>
         <Code language="bash">{`# Clone the official repository
 git clone https://github.com/wandertechuniverse/WanderAIAutoDevConfig.git
 
@@ -382,8 +412,7 @@ wanderai --version`}</Code>
         </div>
       </div>
 
-      <SubHeading>Usage</SubHeading>
-      <DocCard>
+      <DocCard title="Usage">
         <Code language="bash">{`
 # Interactive REPL — auto-routes every message to the best agent
 wanderai
@@ -600,8 +629,7 @@ function SectionMcp() {
       </div>
 
       {/* Step 1: Build */}
-      <DocCard>
-        <SubHeading>Step 1 — Build the server</SubHeading>
+      <DocCard title="Step 1 — Build the server" defaultOpen={true}>
         <Code language="bash">{`cd artifacts/wander-mcp
 pnpm install
 pnpm run build
@@ -609,9 +637,7 @@ pnpm run build
       </DocCard>
 
       {/* Step 2: IDE-specific config */}
-      <DocCard>
-        <SubHeading>Step 2 — Add to {ideLabel}</SubHeading>
-
+      <DocCard title={`Step 2 — Add to ${ideLabel}`} defaultOpen={true}>
         {meta.extraNote && <Callout>{meta.extraNote}</Callout>}
 
         <P>
@@ -804,8 +830,7 @@ function SectionDeployment() {
         that serves <InlineCode>/api</InlineCode> and a static host for the frontend.
       </P>
 
-      <DocCard>
-        <SubHeading>Environment variables</SubHeading>
+      <DocCard title="Environment variables" defaultOpen={true}>
         <P>
           The API server uses the Replit AI Integration proxy — no{" "}
           <InlineCode>OPENAI_API_KEY</InlineCode> is needed on the server. The CLI and
@@ -824,21 +849,16 @@ WANDER_DATA_DIR=/path/to/data     # optional
         `}</CodeWrap>
       </DocCard>
 
-      <DocCard>
-        <SubHeading>Deploy to Replit (recommended)</SubHeading>
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
-          <P>
-            The entire monorepo is already configured for Replit deployment. Click{" "}
-            <strong className="text-foreground">Publish</strong> in the Replit header to
-            deploy to a <InlineCode>.replit.app</InlineCode> domain. The proxy and
-            workflow configuration are handled automatically.
-          </P>
-        </div>
+      <DocCard title="Deploy to Replit (recommended)" dotColor="bg-cyan-400">
+        <P>
+          The entire monorepo is already configured for Replit deployment. Click{" "}
+          <strong className="text-foreground">Publish</strong> in the Replit header to
+          deploy to a <InlineCode>.replit.app</InlineCode> domain. The proxy and
+          workflow configuration are handled automatically.
+        </P>
       </DocCard>
 
-      <DocCard>
-        <SubHeading>Deploy to Vercel (web UI only)</SubHeading>
+      <DocCard title="Deploy to Vercel (web UI only)">
         <Code language="bash">{`
 # 1. Build the frontend
 cd artifacts/wander-ai
@@ -997,18 +1017,20 @@ function DocsSidebarNav({
 export function DocsPage() {
   const [activeSection, setActiveSection] = useState<SectionId>(() => {
     if (typeof window !== "undefined") {
-      const hash = window.location.hash;
-      if (hash === "#ide-integration" || hash === "#mcp") return "mcp";
+      const hash = window.location.hash.replace("#", "") as SectionId;
+      const valid = ["overview", "agents", "cli", "mcp", "repo-context", "deployment"];
+      if (hash === "ide-integration") return "mcp";
+      if (valid.includes(hash)) return hash;
     }
     return "overview";
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const hash = window.location.hash;
-    if (hash === "#ide-integration" || hash === "#mcp") {
-      setActiveSection("mcp");
-    }
+    const hash = window.location.hash.replace("#", "") as SectionId;
+    const valid = ["overview", "agents", "cli", "mcp", "repo-context", "deployment"];
+    if (hash === "ide-integration") { setActiveSection("mcp"); return; }
+    if (valid.includes(hash)) setActiveSection(hash);
   }, []);
 
   const handleSelect = (id: SectionId) => {
